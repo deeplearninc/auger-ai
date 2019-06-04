@@ -6,6 +6,7 @@ install_requires = [
     'requests',
     'shortuuid',
     'auger-hub-api-client>=0.5.6',
+    'ruamel.yaml',
 ]
 
 extras = {
@@ -30,8 +31,8 @@ setup(
     extras_require=extras,
     entry_points={
         'console_scripts': [
-            'auger=auger.cli:cli'
+            'auger=auger.cli.cli:cli'
         ]
     },
-    packages=['auger.api', 'auger.cli']
+    packages=['auger.cli', 'auger.api']
 )
