@@ -1,10 +1,10 @@
 import json
 
-from a2ml.api.auger.hub.hub_api import HubApi
-from a2ml.api.auger.credentials import Credentials
-from a2ml.api.auger.hub.project import AugerProjectApi
-from a2ml.api.auger.hub.cluster import AugerClusterApi
-from a2ml.api.auger.hub.org import AugerOrganizationApi
+from .hub.hub_api import HubApi
+from .credentials import Credentials
+from .hub.project import AugerProjectApi
+from .hub.cluster import AugerClusterApi
+from .hub.org import AugerOrganizationApi
 
 
 class AugerBase(object):

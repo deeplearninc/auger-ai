@@ -1,12 +1,12 @@
-from a2ml.api.auger.base import AugerBase
-from a2ml.api.auger.hub.data_source import AugerDataSourceApi
+from .auger.base import AugerBase
+from .auger.hub.data_source import AugerDataSourceApi
 
 
-class AugerImport(AugerBase):
+class DataSource(AugerBase):
     """Import data into Auger."""
 
     def __init__(self, ctx):
-        super(AugerImport, self).__init__(ctx)
+        super().__init__(ctx)
 
     def import_data(self):
         try:
