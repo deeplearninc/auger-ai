@@ -4,11 +4,9 @@ import click
 import logging
 from .config_yaml import ConfigYaml
 
-log = logging.getLogger("auger.ai")
+log = logging.getLogger("auger")
 
 CONTEXT_SETTINGS = dict(auto_envvar_prefix='AUGER')
-PROVIDERS = ['auger', 'google', 'azure']
-PROVIDERS_META = '|'.join(PROVIDERS)
 
 
 class Context(object):
@@ -19,20 +17,7 @@ class Context(object):
         if len(name) > 0:
             name = "{:<9}".format('[%s]' % name)
         self.name = name
-        self.debug = self.config['config'].get('debug', False) 
-
-    def get_providers(self):
-        providers = self.config['config'].get('providers', [])
-        if isinstance(providers, (list,)):
-            for p in providers:
-                if p not in PROVIDERS:
-                    raise Exception('Provider %s is not supported.' % p)
-            return providers
-        elif isinstance(providers, (str,)):
-            if providers in PROVIDERS:
-                return [providers]
-
-        raise Exception('Expecting list of providers in config.yaml\providers')
+        self.debug = self.config.get('debug', False)
 
     def copy(self, name):
         new = Context(name)
@@ -52,9 +37,8 @@ class Context(object):
         self.config = {}
         if path is None:
             path = os.getcwd()
-        for provider in ['config'] + PROVIDERS:
-            self.config[provider] = self._load_config(
-                 os.path.abspath(os.path.join(path, '%s.yaml' % provider)))
+        self.config = self._load_config(
+             os.path.abspath(os.path.join(path, 'project.yaml')))
 
     def _load_config(self, name):
         config = ConfigYaml()

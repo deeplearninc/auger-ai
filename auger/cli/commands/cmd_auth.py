@@ -1,72 +1,64 @@
-import os
-import errno
 import click
 
-from auger.hub_api_client import HubApiClient
-
-from .utils.context import pass_context
-from .auger.credentials import Credentials
-from .auger.hub.auth import AugerAuthApi
-from .hub.utils.exception import AugerException
-
+from auger.api.auth import AugerAuth
+from auger.cli.utils.context import pass_context
 
 class AuthCmd(object):
 
-     def __init__(self, ctx):
+    def __init__(self, ctx):
         self.ctx = ctx
-        self.credentials = Credentials(ctx.config['auger']).load()
 
-    def whoami(self):
-        if self.credentials.token is None:
-            self.ctx.log('Please login to Auger...')
-        else:
-            self.ctx.log(
-                '%s %s %s' % (
-                    self.credentials.username,
-                    self.credentials.organisation,
-                    self.credentials.api_url))
-
-
-    def login(self, username, password, organisation, url=None):
-        try:
-            self.credentials.token = None
-            self.credentials.save()
-
-            if url is None:
-                url = self.credentials.api_url
-
-            token = AugerAuthApi().login(
-                self.ctx, username, password, organisation, url)
-
-            self.credentials.token = token
-            self.credentials.username = username
-            self.credentials.api_url = url
-            self.credentials.organisation = organisation
-            self.credentials.save()
-
-            self.ctx.log(
-                'You are now logged in on %s as %s.' % (url, username))
-
-        except Exception as exc:
-            exc_text = str(exc)
-            if 'Email or password incorrect' in exc_text:
-                exc_text = 'Email or password incorrect...'
-            self.ctx.log(exc_text)
+    def login(self, username, password, organisation, url):
+        AugerAuth(self.ctx).login(username, password, organisation, url)
 
     def logout(self):
-        if self.credentials.token is None:
-            self.ctx.log('You are not loged in Auger.')
-        else:
-            self.credentials.token = None
-            self.credentials.api_url = None
-            self.credentials.organisation = None
-            self.credentials.save()
-            self.ctx.log('You are loged out of Auger.')
+        AugerAuth(self.ctx).logout()
 
+    def whoami(self):
+        AugerAuth(self.ctx).whoami()
 
-@click.command('whoami', short_help='Display the current logged in user')
+@click.group('auth', short_help='Authenticate with AutoML provider.')
 @pass_context
-def command(ctx):
-    """Create new A2ML project."""
+def cmdl(ctx):
+    """Authenticate with AutoML provider."""
     ctx.setup_logger(format='')
-    AuthCmd(ctx, project_name).whoami()
+
+@click.command(short_help='Login to Auger.')
+@click.option('--username', '-u', default=None, prompt='username',
+    type=click.STRING, help='Auger username.')
+@click.option('--organisation', '-o', default=None, prompt='organisation',
+    type=click.STRING, help='Auger organisation.')
+@click.password_option('--password', '-p', prompt='password',
+    confirmation_prompt=False, help='Auger password.')
+@click.option('--system', '-s', default='production',
+    type=click.Choice(['production','staging']),
+    help='Auger API endpoint.')
+@pass_context
+def login(ctx, username, password, organisation, system):
+    """Login to Auger."""
+    urls = {
+        'production': 'https://app.auger.ai',
+        'staging': 'https://app-staging.auger.ai'}
+    AuthCmd(ctx).login(username, password, organisation, urls[system])
+
+@click.command(short_help='Logout from Auger.')
+@pass_context
+def logout(ctx):
+    """Logout from Auger."""
+    AuthCmd(ctx).logout()
+
+@click.command(short_help='Display the current logged in user.')
+@pass_context
+def whoami(ctx):
+    """Display the current logged in user."""
+    ctx.setup_logger(format='')
+    AuthCmd(ctx).whoami()
+
+
+@pass_context
+def add_commands(ctx):
+    cmdl.add_command(login)
+    cmdl.add_command(logout)
+    cmdl.add_command(whoami)
+
+add_commands()

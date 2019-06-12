@@ -3,7 +3,7 @@ import errno
 import click
 
 # TODO: implement auger project template
-from a2ml.cmdl.utils.template import Template
+# from a2ml.cmdl.utils.template import Template
 from .utils.context import CONTEXT_SETTINGS, pass_context
 
 
