@@ -31,7 +31,7 @@ setup(
     extras_require=extras,
     entry_points={
         'console_scripts': [
-            'auger=auger.cli.cli:cli'
+            'augerai=auger.cli.cli:cli'
         ]
     },
     packages=['auger.cli', 'auger.api']
