@@ -18,7 +18,6 @@ class NewCmd(object):
         self.model_type = model_type
 
     def mk_project_folder(self):
-        # TODO: check if we are already inside a project dir
         if os.path.exists(os.path.join(os.getcwd(), 'auger.yaml')):
             raise Exception('Can\'t create \'%s\' inside a project. \'./auger.yaml\' already exists' % self.project_name)
         project_path = os.path.abspath(os.path.join(os.getcwd(), self.project_name))
