@@ -19,7 +19,7 @@ class AuthCmd(object):
 
 @click.group('auth', short_help='Authenticate with AutoML provider.')
 @pass_context
-def cmdl(ctx):
+def command(ctx):
     """Authenticate with AutoML provider."""
     ctx.setup_logger(format='')
 
@@ -57,8 +57,8 @@ def whoami(ctx):
 
 @pass_context
 def add_commands(ctx):
-    cmdl.add_command(login)
-    cmdl.add_command(logout)
-    cmdl.add_command(whoami)
+    command.add_command(login)
+    command.add_command(logout)
+    command.add_command(whoami)
 
 add_commands()

@@ -2,18 +2,25 @@ import os
 import errno
 import click
 
-# TODO: implement auger project template
-# from a2ml.cmdl.utils.template import Template
-from .utils.context import CONTEXT_SETTINGS, pass_context
+from auger.cli.utils.context import CONTEXT_SETTINGS, pass_context
+from auger.cli.utils.template import Template
+from auger.cli.utils.config import AugerConfig
+from auger.api.credentials import Credentials
 
 
 class NewCmd(object):
 
-    def __init__(self, ctx, project_name):
+    def __init__(self, ctx, project_name, target, source, model_type):
         self.ctx = ctx
         self.project_name = project_name
+        self.target = target
+        self.source = source
+        self.model_type = model_type
 
     def mk_project_folder(self):
+        # TODO: check if we are already inside a project dir
+        if os.path.exists(os.path.join(os.getcwd(), 'auger.yaml')):
+            raise Exception('Can\'t create \'%s\' inside a project. \'./auger.yaml\' already exists' % self.project_name)
         project_path = os.path.abspath(os.path.join(os.getcwd(), self.project_name))
         try:
             os.makedirs(project_path)
@@ -27,18 +34,45 @@ class NewCmd(object):
     def create_project(self):
         try:
             project_path = self.mk_project_folder()
-            Template.copy_config_files(project_path, ['config'] + PROVIDERS)
-            # TODO: update help text
-            self.ctx.log('To run experiment, please do: cd %s && a2ml train' % self.project_name)
+            Template.copy_config_files(project_path)
+
+            if self.source:
+                self.source = AugerDataSourceApi.verify(self.source)[0]
+
+            AugerConfig(self.ctx).config(
+                target = self.target,
+                source = self.source,
+                model_type = self.model_type,
+                project_name = self.project_name,
+                organisation_name = \
+                    Credentials(self.ctx.config).load().organisation)
+
+
+            self.ctx.log(
+                "Next, please go to project dir: cd %s\n"
+                "Add data source: augerai datasource add <your_data_source>\n"
+                "Configure your experiment by editing auger.yaml\n"
+                "And run the experiment: augerai experiment start\n"
+                "After that you can use your model: augerai model deploy && augerai model predict <target_data>" % self.project_name)
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             self.ctx.log('%s', str(e))
 
 
-@click.command('new', short_help='Create new auger project.')
+@click.command('new', short_help='Create new AugerAI project.')
 @click.argument('project-name', required=True, type=click.STRING)
+@click.option('--source', '-s',  default='', type=click.STRING,
+    help='Data source local file or remote url.')
+@click.option('--model-type', '-mt', default='classification',
+    type=click.Choice(['classification','regression','timeseries']),
+    help='Model Type.')
+@click.option('--target', '-t',  default='', type=click.STRING,
+    help='Target column name in data source.')
 @pass_context
-def command(ctx, project_name):
-    """Create new auger project."""
+def command(ctx, project_name, source, model_type, target):
+    """Create new AugerAi project."""
     ctx.setup_logger(format='')
-    NewCmd(ctx, project_name).create_project()
+    NewCmd(ctx, project_name,
+        target, source, model_type).create_project()

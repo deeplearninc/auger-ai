@@ -28,7 +28,7 @@ class AugerCLI(click.MultiCommand):
             import traceback
             traceback.print_exc()
             return
-        return mod.cmdl
+        return mod.command
 
 
 @click.command(cls=AugerCLI, context_settings=CONTEXT_SETTINGS)
