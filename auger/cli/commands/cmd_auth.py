@@ -17,10 +17,10 @@ class AuthCmd(object):
     def whoami(self):
         AugerAuth(self.ctx).whoami()
 
-@click.group('auth', short_help='Authenticate with AutoML provider.')
+@click.group('auth', short_help='Authenticate with Auger Hub.')
 @pass_context
 def command(ctx):
-    """Authenticate with AutoML provider."""
+    """Authenticate with Auger Hub."""
     ctx.setup_logger(format='')
 
 @click.command(short_help='Login to Auger.')
