@@ -1,6 +1,7 @@
-import os
-import errno
 import click
+import errno
+import os
+import sys
 
 from auger.cli.utils.context import CONTEXT_SETTINGS, pass_context
 from auger.cli.utils.template import Template
@@ -56,9 +57,8 @@ class NewCmd(object):
                 "After that you can use your model: augerai model deploy && augerai model predict <target_data>" % self.project_name)
 
         except Exception as e:
-            import traceback
-            traceback.print_exc()
             self.ctx.log('%s', str(e))
+            sys.exit(1)
 
 
 @click.command('new', short_help='Create new AugerAI project.')
