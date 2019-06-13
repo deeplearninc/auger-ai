@@ -37,8 +37,8 @@ class Context(object):
         self.config = {}
         if path is None:
             path = os.getcwd()
-        self.config = self._load_config(
-             os.path.abspath(os.path.join(path, 'project.yaml')))
+        self.config['config'] = self._load_config(
+             os.path.abspath(os.path.join(path, 'auger.yaml')))
 
     def _load_config(self, name):
         config = ConfigYaml()

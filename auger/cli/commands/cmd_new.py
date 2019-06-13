@@ -35,6 +35,7 @@ class NewCmd(object):
             project_path = self.mk_project_folder()
             Template.copy_config_files(project_path)
 
+            self.ctx.load_config(project_path)
             if self.source:
                 self.source = AugerDataSourceApi.verify(self.source)[0]
 

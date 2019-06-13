@@ -7,9 +7,8 @@ class AugerConfig(object):
 
     def _with_auger_yaml(decorated):
         def wrapper(self, *args, **kwargs) :
-            auger_config = self.ctx.config
-            print(dir(auger_config))
-            decorated(self, auger_config, *args, **kwargs)
+            auger_config = self.ctx.config['config']
+            decorated(self, auger_config.yaml, *args, **kwargs)
             auger_config.write()
         return wrapper
 
