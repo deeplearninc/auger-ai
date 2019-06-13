@@ -37,13 +37,28 @@ class TestNewCommand(object):
             assert result.exit_code != 0
             assert caplog.records[-1].message == "Can't create 'test_project'. Folder already exists."
 
-    def test_nested_project_forbiddegn(self):
-        assert False
+    def test_nested_project_forbidden(self, caplog):
+        caplog.set_level(logging.INFO)
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            runner.invoke(cli, ['new', 'test_project'])
+            os.chdir('test_project')
+            result = runner.invoke(cli, ['new', 'test_project'])
+            assert result.exit_code != 0
+            assert caplog.records[-1].message == "Can't create 'test_project' inside a project. './auger.yaml' already exists"
 
-    def test_datasource_created_by_new_command(self):
-        # TODO: data source
+
+    def test_datasource(self):
+        # TODO: data source cration fact
+        # TODO: data source parameters setting
         assert False
 
     def test_full_set_of_arguments(self):
-        # TODO: organisation name
-        assert False
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['new', 'test_project', '--model-type', 'regression', '--target', 'target_column'])
+            config_path = os.path.join(os.getcwd(), 'test_project', 'auger.yaml')
+            config = ConfigYaml()
+            config.load_from_file(config_path)
+            assert config.experiment.type == 'regression'
+            assert config.data_source.target == 'target_column'

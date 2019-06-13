@@ -28,6 +28,8 @@ class AugerConfig(object):
         if model_type:
             yaml['experiment']['metric'] = \
                 'f1_macro' if model_type == 'classification' else 'r2'
+        yaml['experiment']['type'] = model_type or ''
+        yaml['data_source']['target'] = kwargs.get('target', '')
 
     @_with_auger_yaml
     def set_organisation_name(self, yaml, name):
