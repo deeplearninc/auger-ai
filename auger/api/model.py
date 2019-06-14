@@ -1,2 +1,2 @@
-class Model():
+class AugerModel():
     pass

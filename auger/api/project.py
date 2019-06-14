@@ -1,2 +1,2 @@
-class Project():
+class AugerProject():
     pass

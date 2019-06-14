@@ -2,7 +2,7 @@
 # from .hub.data_source import AugerDataSourceApi
 
 
-class DataSource():
+class AugerDataSource():
     pass
 # class DataSource(AugerBase):
 #     """Import data into Auger."""
