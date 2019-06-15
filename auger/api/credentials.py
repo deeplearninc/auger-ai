@@ -8,6 +8,7 @@ class Credentials(object):
         super(Credentials, self).__init__()
         self.config = config
         self.credentials_path = self._path_to_credentials()
+        self.organisation = None
         self.username = None
         self.api_url = None
         self.token = None
@@ -19,6 +20,7 @@ class Credentials(object):
             content = json.loads(file.read())
 
         self.username = content.get('username')
+        self.organisation = content.get('organisation')
         self.api_url = content.get('url')
         if self.api_url is None:
             self.api_url = 'https://app.auger.ai'
@@ -33,6 +35,7 @@ class Credentials(object):
         content['username'] = self.username
         content['url'] = self.api_url
         content['token'] = self.token
+        content['organisation'] = self.organisation
 
         with open(self.credentials_path, 'w') as file:
             file.write(json.dumps(content))
@@ -40,21 +43,21 @@ class Credentials(object):
     def verify(self):
         if self.token is None:
             raise Exception(
-                'Please provide your credentials to import data to Auger...')
+                'Please provide your credentials to Auger...')
         return True
 
     def _path_to_credentials(self):
-        default_path = '{home}/.a2ml'.format(home=os.getenv("HOME"))
+        default_path = '{home}/.augerai'.format(home=os.getenv("HOME"))
         credentials_path = os.path.abspath(self.config.get('credentials_path', default_path))
         return os.path.join(credentials_path, 'auger')
 
     def _ensure_credentials_file(self):
-        file = self.credentials_path
-        dir = os.path.dirname(file)
+        creds_file = self.credentials_path
+        creds_path = os.path.dirname(creds_file)
 
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        if not os.path.exists(creds_path):
+            os.makedirs(creds_path)
 
-        if not os.path.exists(file):
-            with open(file, 'w') as file:
-                file.write('{}')
+        if not os.path.exists(creds_file):
+            with open(creds_file, 'w') as f:
+                f.write('{}')

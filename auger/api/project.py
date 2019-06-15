@@ -1,0 +1,2 @@
+class AugerProject():
+    pass
