@@ -1,7 +1,7 @@
-#Aurer.ai
+##Aurer.ai
 Auger Cloud python and command line interface
 
-#CLI commands
+##CLI commands
 
 - auth - allows to login into Auger Cloud
   - login
@@ -41,8 +41,8 @@ auger.yaml provides local context for the Project and keeps settings for Experim
   - deploy - deploys selected model locally or on Auger Cloud.
   - predict - predicts using deployed model.
 
-#Auger.ai API
-## Base Classes
+##Auger.ai API
+### Base Classes
   - Project
   - DataSource
   - Experiment
