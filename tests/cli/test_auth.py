@@ -9,7 +9,7 @@ from auger.cli.cli import cli
 my_vcr = vcr.VCR(
     cassette_library_dir='tests/fixtures/cassettes',
     filter_headers=['authorization'],
-    record_mode='always',
+    record_mode='none',
     )
 
 class TestAuthCLI():
@@ -37,4 +37,3 @@ class TestAuthCLI():
         result = self.runner.invoke(cli, ['auth', 'whoami'])
         assert result.exit_code == 0
         assert caplog.records[-1].message  == "igor@auger.ai auger https://app.auger.ai"
-        print(caplog.records)
