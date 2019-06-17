@@ -1,5 +1,5 @@
-from a2ml.api.auger.cloud.data_set import AugerDataSetApi
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from .cloud.data_set import AugerDataSetApi
+from .cloud.utils.exception import AugerException
 
 
 class DataSet(AugerDataSetApi):

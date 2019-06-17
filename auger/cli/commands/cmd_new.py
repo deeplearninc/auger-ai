@@ -4,7 +4,7 @@ import os
 import sys
 
 from auger.api.dataset import DataSet
-from auger.cli.utils.context import CONTEXT_SETTINGS, pass_context
+from auger.cli.utils.context import pass_context
 from auger.cli.utils.template import Template
 from auger.cli.utils.config import AugerConfig
 
@@ -46,11 +46,10 @@ class NewCmd(object):
                 self.source = DataSet.verify(self.source)[0]
 
             AugerConfig(self.ctx).config(
-                target = self.target,
-                source = self.source,
-                model_type = self.model_type,
-                project_name = self.project_name)
-
+                target=self.target,
+                source=self.source,
+                model_type=self.model_type,
+                project_name=self.project_name)
 
             self.ctx.log(
                 "Next, please go to project dir: cd %s\n"
@@ -68,16 +67,18 @@ class NewCmd(object):
 
 @click.command('new', short_help='Create new AugerAI project.')
 @click.argument('project-name', required=True, type=click.STRING)
-@click.option('--source', '-s',  default='', type=click.STRING,
+@click.option(
+    '--source', '-s',  default='', type=click.STRING,
     help='Data source local file or remote url.')
-@click.option('--model-type', '-mt', default='classification',
-    type=click.Choice(['classification','regression','timeseries']),
+@click.option(
+    '--model-type', '-mt', default='classification',
+    type=click.Choice(['classification', 'regression', 'timeseries']),
     help='Model Type.')
-@click.option('--target', '-t',  default='', type=click.STRING,
+@click.option(
+    '--target', '-t',  default='', type=click.STRING,
     help='Target column name in data source.')
 @pass_context
 def command(ctx, project_name, source, model_type, target):
     """Create new AugerAi project."""
     ctx.setup_logger(format='')
-    NewCmd(ctx, project_name,
-        target, source, model_type).create_project()
+    NewCmd(ctx, project_name, target, source, model_type).create_project()

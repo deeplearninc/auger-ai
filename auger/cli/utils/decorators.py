@@ -1,7 +1,7 @@
 from functools import wraps
 from auger.api.project import Project
 from auger.api.dataset import DataSet
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from auger.api.cloud.utils.exception import AugerException
 
 
 def error_handler(decorated):
@@ -14,6 +14,7 @@ def error_handler(decorated):
                 traceback.print_exc()
             self.ctx.log(str(exc))
     return wrapper
+
 
 def authenticated(decorated):
     def wrapper(self, *args, **kwargs):

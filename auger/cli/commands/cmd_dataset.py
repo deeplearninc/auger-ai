@@ -6,6 +6,7 @@ from auger.cli.utils.decorators import \
     error_handler, authenticated, with_project
 
 
+
 class DataSetCmd(object):
 
     def __init__(self, ctx):
@@ -53,11 +54,13 @@ def command(ctx):
     """Auger Cloud data sets management"""
     ctx.setup_logger(format='')
 
+
 @click.command(short_help='List data sets on Auger Cloud')
 @pass_context
 def list_cmd(ctx):
     """List Auger remote datasets"""
     DataSetCmd(ctx).list()
+
 
 @click.command(short_help='Create data set on the Auger Cloud')
 @click.argument('source', required=False, type=click.STRING)
@@ -68,6 +71,7 @@ def create(ctx, source):
        will be used instead.
     """
     DataSetCmd(ctx).create(source)
+
 
 @click.command(short_help='Delete data set on the Auger Cloud')
 @click.argument('name', required=False, type=click.STRING)
@@ -95,5 +99,6 @@ def add_commands(ctx):
     command.add_command(create)
     command.add_command(delete)
     command.add_command(select)
+
 
 add_commands()

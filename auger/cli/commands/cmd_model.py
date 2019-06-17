@@ -5,6 +5,7 @@ from auger.cli.utils.context import pass_context
 from auger.cli.utils.decorators import \
     error_handler, authenticated, with_project
 
+
 class ModelCmd(object):
 
     def __init__(self, ctx):
@@ -28,6 +29,7 @@ class ModelCmd(object):
 def command(ctx):
     """Auger model management"""
     ctx.setup_logger(format='')
+
 
 @click.command('deploy', short_help='Deploy trained model.')
 @click.argument('model-id', required=False, type=click.STRING)
@@ -56,5 +58,6 @@ def predict(ctx, filename, model_id, threshold, locally):
 def add_commands(ctx):
     command.add_command(deploy)
     command.add_command(predict)
+
 
 add_commands()

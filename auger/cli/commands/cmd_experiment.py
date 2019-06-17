@@ -12,6 +12,7 @@ from auger.cli.utils.decorators import \
 from a2ml.api.auger.cloud.utils.exception import AugerException
 
 
+
 class ExperimentCmd(object):
 
     def __init__(self, ctx):
@@ -93,11 +94,13 @@ def command(ctx):
     """Auger experiment management"""
     ctx.setup_logger(format='')
 
+
 @click.command(short_help='List Experiments for selected DataSet')
 @pass_context
 def list_cmd(ctx):
     """List Experiments for selected DataSet"""
     ExperimentCmd(ctx).list()
+
 
 @click.command(short_help='Start Experiment')
 @pass_context
@@ -107,11 +110,13 @@ def start(ctx):
     """
     ExperimentCmd(ctx).start()
 
+
 @click.command(short_help='Stop Experiment')
 @pass_context
 def stop(ctx):
     """Stop Experiment"""
     ExperimentCmd(ctx).stop()
+
 
 @click.command(short_help='Show Experiment leaderboard')
 @click.argument('run-id', required=False, type=click.STRING)
@@ -137,5 +142,6 @@ def add_commands(ctx):
     command.add_command(stop)
     command.add_command(leaderboard)
     command.add_command(history)
+
 
 add_commands()
