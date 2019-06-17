@@ -3,7 +3,8 @@ import click
 from auger.api.dataset import DataSet
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
-from auger.cli.utils.decorators import error_handler, authenticated, with_project
+from auger.cli.utils.decorators import error_handler, authenticated,\
+ with_project
 
 class DataSetCmd(object):
 
