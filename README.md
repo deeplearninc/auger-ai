@@ -59,13 +59,13 @@ We strongly recommend to install Python virtual environment:
 $ pip install virtualenv virtualenvwrapper
 ```
 
-Clone A2ML:
+Clone Auger Cloud repo:
 
 ```
 $ git clone https://github.com/deeplearninc/auger-ai
 ```
 
-Setup dependencies and A2ML command line:
+Setup dependencies and Auger command line:
 
 ```
 $ pip install -e .[all]
@@ -74,7 +74,7 @@ $ pip install -e .[all]
 Running tests and getting test coverage:
 
 ```
-$ pytest --cov='a2ml' --cov-report html tests/  
+$ pytest --cov='auger' --cov-report html tests/
 ```
 
 #
