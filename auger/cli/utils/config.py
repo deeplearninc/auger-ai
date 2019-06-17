@@ -16,6 +16,8 @@ class AugerConfig(object):
     def config(self, yaml, *args, **kwargs):
         yaml['data_set']['source'] = \
             kwargs.get('source', '')
+        yaml['data_set']['name'] = \
+            kwargs.get('data_set_name', '')
         yaml['experiment']['name'] = \
             kwargs.get('experiment_name', '')
         yaml['experiment']['experiment_session_id'] = \

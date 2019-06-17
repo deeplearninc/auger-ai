@@ -3,7 +3,7 @@ import errno
 import os
 import sys
 
-from a2ml.api.auger.hub.data_source import AugerDataSourceApi
+from auger.api.dataset import DataSet
 from auger.cli.utils.context import CONTEXT_SETTINGS, pass_context
 from auger.cli.utils.template import Template
 from auger.cli.utils.config import AugerConfig
@@ -39,15 +39,13 @@ class NewCmd(object):
 
             self.ctx.load_config(project_path)
             if self.source:
-                self.source = AugerDataSourceApi.verify(self.source)[0]
+                self.source = DataSet.verify(self.source)[0]
 
             AugerConfig(self.ctx).config(
                 target = self.target,
                 source = self.source,
                 model_type = self.model_type,
-                project_name = self.project_name,
-                organisation_name = \
-                    Credentials(self.ctx.config).load().organisation)
+                project_name = self.project_name)
 
 
             self.ctx.log(

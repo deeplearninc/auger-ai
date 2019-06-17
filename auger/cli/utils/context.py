@@ -2,7 +2,9 @@ import os
 import sys
 import click
 import logging
-from .config_yaml import ConfigYaml
+from a2ml.api.auger.hub.hub_api import HubApi
+from auger.api.credentials import Credentials
+from auger.cli.utils.config_yaml import ConfigYaml
 
 log = logging.getLogger("auger")
 
@@ -18,6 +20,8 @@ class Context(object):
             name = "{:<9}".format('[%s]' % name)
         self.name = name
         self.debug = self.config.get('debug', False)
+        self.credentials = Credentials(self.config['auger']).load()
+        HubApi().setup(self, self.credentials.api_url, self.credentials.token)
 
     def copy(self, name):
         new = Context(name)
@@ -37,7 +41,7 @@ class Context(object):
         self.config = {}
         if path is None:
             path = os.getcwd()
-        self.config['config'] = self._load_config(
+        self.config['auger'] = self._load_config(
              os.path.abspath(os.path.join(path, 'auger.yaml')))
 
     def _load_config(self, name):
