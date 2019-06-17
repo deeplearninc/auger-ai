@@ -19,7 +19,7 @@ class Context(object):
         if len(name) > 0:
             name = "{:<9}".format('[%s]' % name)
         self.name = name
-        self.debug = self.config.get('debug', False)
+        self.debug = self.config['auger'].get('debug', False)
         self.credentials = Credentials(self.config['auger']).load()
         HubApi().setup(self, self.credentials.api_url, self.credentials.token)
 

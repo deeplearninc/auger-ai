@@ -4,7 +4,7 @@
 project:
 
 # Data Set
-data_set:
+dataset:
   # Local file or remote url
   # Will be used by dataset create if not specified explicitly
   source:
