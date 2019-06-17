@@ -16,7 +16,12 @@ class DataSetCmd(object):
         for dataset in iter(DataSet(project).list()):
             self.ctx.log(dataset.get('name'))
 
-    def create(self, *args, **kwargs):
+    @error_handler
+    @authenticated
+    @with_project
+    def create(self, project, source):
+        if source is None:
+            source = self.ctx.config['auger'].get('dataset/source')
         DataSet(self.ctx).create(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -36,10 +41,12 @@ def list_cmd(ctx):
     DataSetCmd(ctx).list()
 
 @click.command(short_help='Create data set on the Auger Cloud')
+@click.option('--source', '-s',  default=None, type=click.STRING,
+    help='Data source local file or remote url.')
 @pass_context
 def create(ctx):
     """Create data set on the Auger Cloud"""
-    DataSetCmd(ctx).create()
+    DataSetCmd(ctx).create(source)
 
 @click.command(short_help='Delete data set on the Auger Cloud')
 @pass_context

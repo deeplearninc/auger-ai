@@ -25,5 +25,11 @@ def with_project(decorated):
             raise Exception(
                 'Please specify your project name (auger.yaml/project)...')
         project = Project(self.ctx, project_name)
+        project_properties = project.properties()
+        if project_properties is None:
+            self.ctx.log(
+                'Can\'t find project %s on the Auger Cloud.'
+                ' Creating...' % project_name)
+            project.create()
         return decorated(self, project, *args, **kwargs)
     return wrapper
