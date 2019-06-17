@@ -48,7 +48,8 @@ class Credentials(object):
 
     def _path_to_credentials(self):
         default_path = '{home}/.augerai'.format(home=os.getenv("HOME"))
-        credentials_path = os.path.abspath(self.config.get('credentials_path', default_path))
+        credentials_path = os.path.abspath(
+            self.config.get('credentials_path', default_path))
         return os.path.join(credentials_path, 'auger')
 
     def _ensure_credentials_file(self):

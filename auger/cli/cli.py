@@ -7,7 +7,9 @@ from .utils.context import CONTEXT_SETTINGS, pass_context
 
 
 class AugerCLI(click.MultiCommand):
-    cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'commands'))
+    cmd_folder = os.path.abspath(
+        os.path.join(os.path.dirname(__file__),
+        'commands'))
 
     def list_commands(self, ctx):
         command_list = []

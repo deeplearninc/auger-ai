@@ -7,7 +7,6 @@ from auger.api.dataset import DataSet
 from auger.cli.utils.context import CONTEXT_SETTINGS, pass_context
 from auger.cli.utils.template import Template
 from auger.cli.utils.config import AugerConfig
-from auger.api.credentials import Credentials
 
 
 class NewCmd(object):
@@ -21,13 +20,18 @@ class NewCmd(object):
 
     def mk_project_folder(self):
         if os.path.exists(os.path.join(os.getcwd(), 'auger.yaml')):
-            raise Exception('Can\'t create \'%s\' inside a project. \'./auger.yaml\' already exists' % self.project_name)
-        project_path = os.path.abspath(os.path.join(os.getcwd(), self.project_name))
+            raise Exception(
+                "Can't create '%s' inside a project."
+                " './auger.yaml' already exists" %
+                self.project_name)
+        project_path = os.path.join(os.getcwd(), self.project_name)
         try:
             os.makedirs(project_path)
         except OSError as e:
             if e.errno == errno.EEXIST:
-                raise Exception('Can\'t create \'%s\'. Folder already exists.' % self.project_name)
+                raise Exception(
+                    "Can't create '%s'. Folder already exists." %
+                    self.project_name)
             raise
         self.ctx.log('Created project folder %s', self.project_name)
         return project_path
