@@ -1,4 +1,4 @@
-class TestDataSourceCLI():
+class TestDataSetCLI():
     def test_list(self):
         assert False
 

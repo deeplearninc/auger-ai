@@ -26,7 +26,7 @@ class TestNewCommand(object):
             # config contains proper data
             config = ConfigYaml()
             config.load_from_file(config_file)
-            assert config.project_name == 'test_project'
+            assert config.project == 'test_project'
 
     def test_project_with_given_name_already_exists(self, caplog):
         caplog.set_level(logging.INFO)
@@ -61,4 +61,4 @@ class TestNewCommand(object):
             config = ConfigYaml()
             config.load_from_file(config_path)
             assert config.experiment.type == 'regression'
-            assert config.data_source.target == 'target_column'
+            assert config.experiment.target == 'target_column'

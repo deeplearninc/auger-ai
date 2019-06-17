@@ -10,7 +10,7 @@ class TestCliTableOfContents(object):
         result = runner.invoke(cli)
         assert result.exit_code == 0
         assert 'project' in result.output
-        assert 'datasource' in result.output
+        assert 'dataset' in result.output
         assert 'experiment' in result.output
         assert 'model' in result.output
         assert 'new' in result.output
