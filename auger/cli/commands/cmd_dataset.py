@@ -1,6 +1,7 @@
 import click
 
 from auger.api.dataset import DataSet
+from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
 from auger.cli.utils.decorators import error_handler, authenticated, with_project
 
@@ -13,7 +14,7 @@ class DataSetCmd(object):
     @authenticated
     @with_project
     def list(self, project):
-        for dataset in iter(DataSet(project).list()):
+        for dataset in iter(DataSet(self.ctx, project).list()):
             self.ctx.log(dataset.get('name'))
 
     @error_handler
@@ -22,7 +23,10 @@ class DataSetCmd(object):
     def create(self, project, source):
         if source is None:
             source = self.ctx.config['auger'].get('dataset/source')
-        DataSet(self.ctx).create(*args, **kwargs)
+        if source is None:
+            raise Exception('Please specify data source file...')
+        dataset = DataSet(self.ctx, project).create(source)
+        AugerConfig(self.ctx).set_data_set(dataset.name)
 
     def delete(self, *args, **kwargs):
         DataSet(self.ctx).delete(*args, **kwargs)
@@ -44,7 +48,7 @@ def list_cmd(ctx):
 @click.option('--source', '-s',  default=None, type=click.STRING,
     help='Data source local file or remote url.')
 @pass_context
-def create(ctx):
+def create(ctx, source):
     """Create data set on the Auger Cloud"""
     DataSetCmd(ctx).create(source)
 
