@@ -1,16 +1,16 @@
 import sys
 
 from auger.hub_api_client import HubApiClient
-from .hub.auth import AugerAuthApi
-from .credentials import Credentials
-from .hub.utils.exception import AugerException
+from a2ml.api.auger.hub.auth import AugerAuthApi
+from auger.api.credentials import Credentials
+from a2ml.api.auger.hub.utils.exception import AugerException
 
 
 class AugerAuth(object):
 
     def __init__(self, ctx):
         self.ctx = ctx
-        self.credentials = Credentials(ctx.config['auger']).load()
+        self.credentials = ctx.credentials
 
     def login(self, username, password, organisation, url=None):
         try:
