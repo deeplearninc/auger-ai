@@ -1,4 +1,4 @@
 from .experiment import AugerExperiment
-from .datasource import AugerDataSource
+from .dataset import DataSet
 from .project import AugerProject
 from .model import AugerModel

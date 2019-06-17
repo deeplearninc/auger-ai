@@ -3,6 +3,7 @@ import errno
 import os
 import sys
 
+from a2ml.api.auger.hub.data_source import AugerDataSourceApi
 from auger.cli.utils.context import CONTEXT_SETTINGS, pass_context
 from auger.cli.utils.template import Template
 from auger.cli.utils.config import AugerConfig
@@ -51,10 +52,12 @@ class NewCmd(object):
 
             self.ctx.log(
                 "Next, please go to project dir: cd %s\n"
-                "Add data source: augerai datasource add <your_data_source>\n"
+                "Select or create data set on Auger Cloud: "
+                "augerai dataset create|select\n"
                 "Configure your experiment by editing auger.yaml\n"
                 "And run the experiment: augerai experiment start\n"
-                "After that you can use your model: augerai model deploy && augerai model predict <target_data>" % self.project_name)
+                "After that you can use your model: augerai model deploy && "
+                "augerai model predict <target_data>" % self.project_name)
 
         except Exception as e:
             self.ctx.log('%s', str(e))

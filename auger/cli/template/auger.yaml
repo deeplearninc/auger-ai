@@ -1,19 +1,25 @@
 ---
 
-# Name of organisation on the Auger Cloud
-org_name:
-# Name of the project on Auger Cloud
-project_name:
+# Name of the Project on Auger Cloud
+project:
 
-# Data Source Name on the Auger Cloud
-data_source:
+# Data Set
+data_set:
+  # Local file or remote url
+  # Will be used by dataset create if not specified explicitly
+  source:
+  # name of the Data Set on Auger Cloud
   name:
 
 experiment:
-  # Latest experiment name
+  # Latest experiment name (if not specified, will be set on the first run)
   name:
-  # Latest experiment session
+  # Latest experiment run id
   experiment_session_id:
+  # Model type: classification|regression|timeseries
+  type: classification
+  # Target column name
+  target:
   # Time series feature. If Data Source contains more then one DATETIME feature
   # you will have to explicitly specify feature to use as time series
   time_series:

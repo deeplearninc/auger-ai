@@ -15,24 +15,24 @@ auger.yaml provides local context for the Project and keeps settings for Experim
 - project
   - list - list all Projects for your Organization.
   - select - selects existing Project and stores it's name in auger.yaml;
-  all further operations with DataSource(s), Experiment(s), and Model(s) will be
+  all further operations with DataSet(s), Experiment(s), and Model(s) will be
   performed in context of this Project.  
   - create - creates Project on Auger Cloud; Project name will be stored in auger.yaml;
-  all further operations with DataSource(s), Experiment(s), and Model(s) will be
+  all further operations with DataSet(s), Experiment(s), and Model(s) will be
   performed in context of this Project.  
   - delete - deletes Project on Auger Cloud and clears Project name from auger.yaml
 
-- datasource
-  - list - list all DataSource(s) for the Project.
-  - select - selects existing DataSource and stores it's name in auger.yaml;
-  all further operations with Experiments and Models will be performed using this DataSource.
-  - create - creates new DataSource on Auger Cloud from the local or remote data file;
-  name of the DataSource will be stored in auger.yaml;
-  all further operations with Experiments and Models will be performed using this DataSource.
-  - delete - deletes DataSource on Auger Cloud and clears DataSource name from auger.yaml
+- dataset
+  - list - list all DataSets(s) for the Project.
+  - select - selects existing DataSet and stores it's name in auger.yaml;
+  all further operations with Experiments and Models will be performed using this DataSet.
+  - create - creates new DataSet on Auger Cloud from the local or remote data file;
+  name of the DataSet will be stored in auger.yaml;
+  all further operations with Experiments and Models will be performed using this DataSet.
+  - delete - deletes DataSet on Auger Cloud and clears DataSet name from auger.yaml
 
 - experiment
-  - start - starts Experiment with selected DataSource; Experiment settings configured in auger.yaml
+  - start - starts Experiment with selected DataSet; Experiment settings configured in auger.yaml
   - stop - stops running experiment.
   - leaderboard - shows leaderboard of the currently running or the last completed experiment.
   - history - shows history (leaderboards and settings) of the previous experiment runs.
@@ -46,7 +46,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
 # Auger.ai API
 ## Base Classes
   - Project
-  - DataSource
+  - DataSet
   - Experiment
   - Model
 
