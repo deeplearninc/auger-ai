@@ -1,6 +1,6 @@
 import click
 
-from auger.api.project import AugerProject
+from auger.api.project import Project
 from auger.cli.utils.context import pass_context
 
 class ProjectCmd(object):

@@ -10,6 +10,7 @@ class AugerConfig(object):
             auger_config = self.ctx.config['auger']
             decorated(self, auger_config.yaml, *args, **kwargs)
             auger_config.write()
+            return self
         return wrapper
 
     @_with_auger_yaml
@@ -33,8 +34,9 @@ class AugerConfig(object):
         yaml['experiment']['target'] = kwargs.get('target', '')
 
     @_with_auger_yaml
-    def set_data_set(self, yaml, data_set_name):
+    def set_data_set(self, yaml, data_set_name, data_set_source):
         yaml['dataset']['name'] = data_set_name
+        yaml['dataset']['source'] = data_set_source
 
     @_with_auger_yaml
     def set_experiment(self, yaml, experiment_name, experiment_session_id):

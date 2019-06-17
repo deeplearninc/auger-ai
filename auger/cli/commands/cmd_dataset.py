@@ -3,8 +3,8 @@ import click
 from auger.api.dataset import DataSet
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
-from auger.cli.utils.decorators import error_handler, authenticated,\
- with_project
+from auger.cli.utils.decorators import \
+    error_handler, authenticated, with_project
 
 class DataSetCmd(object):
 
@@ -13,24 +13,39 @@ class DataSetCmd(object):
 
     @error_handler
     @authenticated
-    @with_project
+    @with_project(autocreate=False)
     def list(self, project):
         for dataset in iter(DataSet(self.ctx, project).list()):
             self.ctx.log(dataset.get('name'))
 
     @error_handler
     @authenticated
-    @with_project
+    @with_project(autocreate=True)
     def create(self, project, source):
         if source is None:
             source = self.ctx.config['auger'].get('dataset/source')
-        if source is None:
-            raise Exception('Please specify data source file...')
         dataset = DataSet(self.ctx, project).create(source)
-        AugerConfig(self.ctx).set_data_set(dataset.name)
+        AugerConfig(self.ctx).set_data_set(dataset.name, source)
 
-    def delete(self, *args, **kwargs):
-        DataSet(self.ctx).delete(*args, **kwargs)
+    @error_handler
+    @authenticated
+    @with_project(autocreate=False)
+    def delete(self, project, name):
+        if name is None:
+            name = self.ctx.config['auger'].get('dataset/name', None)
+        DataSet(self.ctx, project, name).delete()
+        if name == self.ctx.config['auger'].get('dataset/name', None):
+            AugerConfig(self.ctx).\
+                set_data_set(None).\
+                set_experiment(None, None)
+        self.ctx.log('Deleted dataset %s' % name)
+
+    def select(self, name):
+        old_name = self.ctx.config['auger'].get('dataset/name', None)
+        if name != old_name:
+            AugerConfig(self.ctx).\
+                set_data_set(name, None).\
+                set_experiment(None, None)
 
 
 @click.group('dataset', short_help='Auger Cloud dataset(s) management')
@@ -46,18 +61,33 @@ def list_cmd(ctx):
     DataSetCmd(ctx).list()
 
 @click.command(short_help='Create data set on the Auger Cloud')
-@click.option('--source', '-s',  default=None, type=click.STRING,
-    help='Data source local file or remote url.')
+@click.argument('source', required=False, type=click.STRING)
 @pass_context
 def create(ctx, source):
-    """Create data set on the Auger Cloud"""
+    """Create data set on the Auger Cloud.
+       If source is not specified, auger.yaml/dataset/source
+       will be used instead.
+    """
     DataSetCmd(ctx).create(source)
 
 @click.command(short_help='Delete data set on the Auger Cloud')
+@click.argument('name', required=False, type=click.STRING)
 @pass_context
-def delete(ctx):
-    """Delete data set on the Auger Cloud"""
-    DataSetCmd(ctx).delete()
+def delete(ctx, name):
+    """Delete data set on the Auger Cloud
+       If name is not specified, auger.yaml/dataset/name
+       will be used instead.
+    """
+    DataSetCmd(ctx).delete(name)
+
+@click.command(short_help='Select data set')
+@click.argument('name', required=True, type=click.STRING)
+@pass_context
+def select(ctx, name):
+    """Select data set.
+       Name will be set in auger.yaml/dataset/name
+    """
+    DataSetCmd(ctx).select(name)
 
 
 @pass_context
@@ -65,5 +95,6 @@ def add_commands(ctx):
     command.add_command(list_cmd, name='list')
     command.add_command(create)
     command.add_command(delete)
+    command.add_command(select)
 
 add_commands()
