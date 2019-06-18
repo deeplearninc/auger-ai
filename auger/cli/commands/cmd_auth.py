@@ -18,6 +18,7 @@ class AuthCmd(object):
     def whoami(self):
         AugerAuth(self.ctx).whoami()
 
+
 @click.group('auth', short_help='Authenticate with Auger Cloud.')
 @pass_context
 def command(ctx):
