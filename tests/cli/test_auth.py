@@ -4,6 +4,7 @@ import vcr
 from click.testing import CliRunner
 
 from auger.cli.cli import cli
+from .utils import CliRunnerMixin
 
 
 my_vcr = vcr.VCR(
@@ -13,9 +14,7 @@ my_vcr = vcr.VCR(
     )
 
 
-class TestAuthCLI():
-    def setup_method(self):
-        self.runner = CliRunner()
+class TestAuthCLI(CliRunnerMixin):
 
     @my_vcr.use_cassette('login.yaml')
     def test_login(self, caplog):
