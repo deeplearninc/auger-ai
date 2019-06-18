@@ -32,7 +32,7 @@ class TestAuthCLI():
                 ['auth', 'login'],
                 input="test@example.com\nauger\npassword\n")
         with runner.isolated_filesystem():
-            result = self.runner.invoke(cli, ['auth', 'logout'])
+            result = runner.invoke(cli, ['auth', 'logout'])
             assert result.exit_code == 0
             assert log.records[-1].message == "You are loged out of Auger."
 
@@ -43,7 +43,7 @@ class TestAuthCLI():
                 cli,
                 ['auth', 'login'],
                 input="test@example.com\nauger\npassword\n")
-        result = self.runner.invoke(cli, ['auth', 'whoami'])
+        result = runner.invoke(cli, ['auth', 'whoami'])
         assert result.exit_code == 0
         assert (log.records[-1].message ==
                 "test@example.com auger https://app.auger.ai")
