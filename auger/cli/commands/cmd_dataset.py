@@ -1,10 +1,10 @@
 import click
-
 from auger.api.dataset import DataSet
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
 from auger.cli.utils.decorators import \
     error_handler, authenticated, with_project
+
 
 class DataSetCmd(object):
 
@@ -15,8 +15,11 @@ class DataSetCmd(object):
     @authenticated
     @with_project(autocreate=False)
     def list(self, project):
+        count = 0
         for dataset in iter(DataSet(self.ctx, project).list()):
             self.ctx.log(dataset.get('name'))
+            count += 1
+        self.ctx.log('%s DataSet(s) listed' % str(count))
 
     @error_handler
     @authenticated
@@ -26,6 +29,7 @@ class DataSetCmd(object):
             source = self.ctx.config['auger'].get('dataset/source')
         dataset = DataSet(self.ctx, project).create(source)
         AugerConfig(self.ctx).set_data_set(dataset.name, source)
+        self.ctx.log('Created DataSet %s' % dataset.name)
 
     @error_handler
     @authenticated
@@ -35,8 +39,9 @@ class DataSetCmd(object):
             name = self.ctx.config['auger'].get('dataset/name', None)
         DataSet(self.ctx, project, name).delete()
         if name == self.ctx.config['auger'].get('dataset/name', None):
+            source = self.ctx.config['auger'].get('dataset/source', None)
             AugerConfig(self.ctx).\
-                set_data_set(None).\
+                set_data_set(None, source).\
                 set_experiment(None, None)
         self.ctx.log('Deleted dataset %s' % name)
 
@@ -46,6 +51,7 @@ class DataSetCmd(object):
             AugerConfig(self.ctx).\
                 set_data_set(name, None).\
                 set_experiment(None, None)
+        self.ctx.log('Selected DataSet %s' % name)
 
 
 @click.group('dataset', short_help='Auger Cloud dataset(s) management')
