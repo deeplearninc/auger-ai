@@ -6,7 +6,6 @@ from auger.cli.utils.decorators import \
     error_handler, authenticated, with_project
 
 
-
 class DataSetCmd(object):
 
     def __init__(self, ctx):
@@ -82,6 +81,7 @@ def delete(ctx, name):
        will be used instead.
     """
     DataSetCmd(ctx).delete(name)
+
 
 @click.command(short_help='Select data set')
 @click.argument('name', required=True, type=click.STRING)
