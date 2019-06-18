@@ -1,24 +1,23 @@
 from auger.cli.cli import cli
-from .utils import CliRunnerMixin
 
 
-class TestDataSetCLI(CliRunnerMixin):
-    def test_list(self):
-        with self.runner.isolated_filesystem():
-            result = self.runner.invoke(cli, ['dataset', 'list'])
+class TestDataSetCLI():
+    def test_list(self, runner, log):
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['dataset', 'list'])
         assert result.exit_code == 0
 
-    def test_create(self):
-        with self.runner.isolated_filesystem():
-            result = self.runner.invoke(cli, ['dataset', 'create'])
+    def test_create(self, runner, log):
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['dataset', 'create'])
         assert result.exit_code == 0
 
-    def test_delete(self):
-        with self.runner.isolated_filesystem():
-            result = self.runner.invoke(cli, ['dataset', 'delete', 'test'])
+    def test_delete(self, runner, log):
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['dataset', 'delete', 'test'])
         assert result.exit_code == 0
 
-    def test_select(self):
-        with self.runner.isolated_filesystem():
-            result = self.runner.invoke(cli, ['dataset', 'select', 'test'])
+    def test_select(self, runner, log):
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['dataset', 'select', 'iris'])
         assert result.exit_code == 0

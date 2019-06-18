@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from a2ml.api.auger.cloud.experiment import AugerExperimentApi
-from a2ml.api.auger.cloud.utils.exception import AugerException
-from a2ml.api.auger.cloud.experiment import AugerExperimentSessionApi
+from .cloud.experiment import AugerExperimentApi
+from .cloud.utils.exception import AugerException
+from .cloud.experiment import AugerExperimentSessionApi
 
 
 class Experiment(AugerExperimentApi):

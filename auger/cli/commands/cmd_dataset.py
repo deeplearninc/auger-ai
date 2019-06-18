@@ -40,6 +40,7 @@ class DataSetCmd(object):
             AugerConfig(self.ctx).set_data_set(None).set_experiment(None)
         self.ctx.log('Deleted dataset %s' % name)
 
+    @error_handler
     def select(self, name):
         old_name = self.ctx.get_config('auger').get('dataset', None)
         if name != old_name:

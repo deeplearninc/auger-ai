@@ -1,17 +1,15 @@
 import os
-import logging
 
 from auger.cli.cli import cli
 from auger.cli.utils.config_yaml import ConfigYaml
-from .utils import CliRunnerMixin
 
 
-class TestNewCommand(CliRunnerMixin):
+class TestNewCommand():
 
-    def test_minimal_arguments_successfull_creation(self):
+    def test_minimal_arguments_successfull_creation(self, runner):
         # successful status
-        with self.runner.isolated_filesystem():
-            result = self.runner.invoke(cli, ['new', 'test_project'])
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['new', 'test_project'])
             assert result.exit_code == 0
 
             # directory created
@@ -27,34 +25,34 @@ class TestNewCommand(CliRunnerMixin):
             config.load_from_file(config_file)
             assert config.project == 'test_project'
 
-    def test_project_with_given_name_already_exists(self, caplog):
-        caplog.set_level(logging.INFO)
-        with self.runner.isolated_filesystem():
-            self.runner.invoke(cli, ['new', 'test_project'])
-            result = self.runner.invoke(cli, ['new', 'test_project'])
+    def test_project_with_given_name_already_exists(self, runner, log):
+        log.set_level(logging.INFO)
+        with runner.isolated_filesystem():
+            runner.invoke(cli, ['new', 'test_project'])
+            result = runner.invoke(cli, ['new', 'test_project'])
             assert result.exit_code != 0
-            assert (caplog.records[-1].message ==
+            assert (log.records[-1].message ==
                     "Can't create 'test_project'. Folder already exists.")
 
-    def test_nested_project_forbidden(self, caplog):
-        caplog.set_level(logging.INFO)
-        with self.runner.isolated_filesystem():
-            self.runner.invoke(cli, ['new', 'test_project'])
+    def test_nested_project_forbidden(self, runner, log):
+        log.set_level(logging.INFO)
+        with runner.isolated_filesystem():
+            runner.invoke(cli, ['new', 'test_project'])
             os.chdir('test_project')
-            result = self.runner.invoke(cli, ['new', 'test_project'])
+            result = runner.invoke(cli, ['new', 'test_project'])
             assert result.exit_code != 0
-            assert (caplog.records[-1].message ==
+            assert (log.records[-1].message ==
                     "Can't create 'test_project' inside a project."
                     " './auger.yaml' already exists")
 
-    def test_dataset(self):
+    def test_dataset(self, runner):
         # TODO: dataset cration fact
         # TODO: dataset parameters setting
         assert False
 
-    def test_full_set_of_arguments(self):
-        with self.runner.isolated_filesystem():
-            result = self.runner.invoke(
+    def test_full_set_of_arguments(self, runner):
+        with runner.isolated_filesystem():
+            result = runner.invoke(
                 cli, [
                     'new', 'test_project',
                     '--model-type', 'regression',
