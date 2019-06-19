@@ -1,4 +1,5 @@
 from functools import wraps
+
 from auger.api.project import Project
 from auger.api.dataset import DataSet
 from auger.api.cloud.utils.exception import AugerException

@@ -1,5 +1,4 @@
 import os
-import sys
 
 import click
 
@@ -24,6 +23,7 @@ class AugerCLI(click.MultiCommand):
             mod = __import__('auger.cli.commands.cmd_' + name,
                              fromlist=[''])
         except ImportError:
+            # import traceback; traceback.print_exc();
             return
         return mod.command
 

@@ -25,4 +25,3 @@ class TestProjectCLI():
     def test_stop(self, runner, isolated):
         result = runner.invoke(cli, ['project', 'stop'])
         assert result.exit_code == 0
-

@@ -1,18 +1,7 @@
-import vcr
-from click.testing import CliRunner
-
 from auger.cli.cli import cli
 
 
-my_vcr = vcr.VCR(
-    cassette_library_dir='tests/fixtures/cassettes',
-    filter_headers=['authorization'],
-    record_mode='none',
-    )
-
-
 class TestAuthCLI():
-    @my_vcr.use_cassette('login.yaml')
     def test_login(self, log, runner):
         with runner.isolated_filesystem():
             result = runner.invoke(
@@ -24,7 +13,6 @@ class TestAuthCLI():
                 "You are now logged in on https://app.auger.ai"
                 " as test@example.com.")
 
-    @my_vcr.use_cassette('logout.yaml')
     def test_logout(self, log, runner):
         with runner.isolated_filesystem():
             result = runner.invoke(
@@ -36,7 +24,6 @@ class TestAuthCLI():
             assert result.exit_code == 0
             assert log.records[-1].message == "You are loged out of Auger."
 
-    @my_vcr.use_cassette('whoami.yaml')
     def test_whoami(self, log, runner):
         with runner.isolated_filesystem():
             result = runner.invoke(
@@ -47,3 +34,7 @@ class TestAuthCLI():
         assert result.exit_code == 0
         assert (log.records[-1].message ==
                 "test@example.com auger https://app.auger.ai")
+
+    def test_logout_not_logged(self, log, runner, isolated):
+        result = runner.invoke(cli, ['auth', 'logout'])
+        assert (log.records[-1].message == 'You are not loged in Auger.')

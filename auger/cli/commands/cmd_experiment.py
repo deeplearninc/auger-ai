@@ -1,15 +1,12 @@
-import os
 import click
-import urllib.parse
 
-from auger.api.dataset import DataSet
 from auger.api.experiment import Experiment
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
 from auger.cli.utils.formatter import print_table
 from auger.cli.utils.decorators import \
-    error_handler, authenticated, with_project, with_dataset
-from a2ml.api.auger.cloud.utils.exception import AugerException
+    error_handler, authenticated, with_dataset
+from auger.api.cloud.utils.exception import AugerException
 
 
 

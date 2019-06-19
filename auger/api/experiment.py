@@ -31,7 +31,8 @@ class Experiment(AugerExperimentApi):
             data_set_id = self.dataset.oid
             experiment_data_set = self.properties().get('project_file_id')
             if data_set_id != experiment_data_set:
-                raise AugerException('Can\'t start Experiment '
+                raise AugerException(
+                    'Can\'t start Experiment '
                     'configured with different DataSet...')
 
         if not self.dataset.project.is_running():
