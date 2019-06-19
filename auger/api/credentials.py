@@ -1,6 +1,8 @@
 import os
 import json
 
+from auger.api.hub.utils.exception import NotAuthenticatedException
+
 
 class Credentials(object):
     """Manage credentials on user computer."""
@@ -44,7 +46,7 @@ class Credentials(object):
 
     def verify(self):
         if self.token is None:
-            raise Exception(
+            raise NotAuthenticatedException(
                 'Please provide your credentials to Auger...')
         return True
 

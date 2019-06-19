@@ -1,8 +1,10 @@
 from functools import wraps
+import sys
 
 from auger.api.project import Project
 from auger.api.dataset import DataSet
-from auger.api.cloud.utils.exception import AugerException
+from auger.api.cloud.utils.exception import \
+     AugerException, NotAuthenticatedException
 
 
 def error_handler(decorated):
@@ -20,7 +22,11 @@ def error_handler(decorated):
 def authenticated(decorated):
     def wrapper(self, *args, **kwargs):
         # verify avalability of auger credentials
-        self.ctx.credentials.verify()
+        try:
+            self.ctx.credentials.verify()
+        except NotAuthenticatedException as e:
+            self.ctx.log(str(e))    
+            sys.exit(1)
         return decorated(self, *args, **kwargs)
     return wrapper
 
