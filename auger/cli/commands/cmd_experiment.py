@@ -6,8 +6,11 @@ from auger.api.dataset import DataSet
 from auger.api.experiment import Experiment
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
+from auger.cli.utils.formatter import print_table
 from auger.cli.utils.decorators import \
     error_handler, authenticated, with_project, with_dataset
+from a2ml.api.auger.hub.utils.exception import AugerException
+
 
 class ExperimentCmd(object):
 
@@ -33,17 +36,54 @@ class ExperimentCmd(object):
             Experiment(self.ctx, dataset, experiment_name).start()
         AugerConfig(self.ctx).set_experiment(eperiment_name, session_id)
 
-    def status(self, *args, **kwargs):
-        Experiment(self.ctx).status(*args, **kwargs)
+    @error_handler
+    @authenticated
+    @with_dataset
+    def stop(self, dataset):
+        name = self.ctx.config['auger'].get('experiment/name', None)
+        if name is None:
+            raise AugerException('Please specify Experiment name...')
+        if Experiment(self.ctx, dataset, name).stop():
+            self.ctx.log('Search is stopped...')
+        else:
+            self.ctx.log('Search is not running. Stop is ignored.')
 
-    def stop(self, *args, **kwargs):
-        Experiment(self.ctx).stop(*args, **kwargs)
+    @error_handler
+    @authenticated
+    @with_dataset
+    def leaderboard(self, dataset, run_id):
+        name = self.ctx.config['auger'].get('experiment/name', None)
+        if name is None:
+            raise AugerException('Please specify Experiment name...')
+        leaderboard, status = Experiment(
+            self.ctx, dataset, name).leaderboard(run_id)
+        if leaderboard is None:
+            raise AugerException('No leaderboard was found...')
+        print_table(self.ctx.log, leaderboard)
+        messages = {
+            'preprocess': 'Search is preprocessing data for traing...',
+            'started': 'Search is in progress...',
+            'completed': 'Search is completed.',
+            'interrupted': 'Search was interrupted.'
+        }
+        message = messages.get(status, None)
+        if message:
+            self.ctx.log(message)
+        else:
+            self.ctx.log('Search status is %s' % status)
 
-    def leaderboard(self, *args, **kwargs):
-        Experiment(self.ctx).leaderboard(*args, **kwargs)
-
-    def history(self, *args, **kwargs):
-        Experiment(self.ctx).history(*args, **kwargs)
+    @error_handler
+    @authenticated
+    @with_dataset
+    def history(self, dataset):
+        name = self.ctx.config['auger'].get('experiment/name', None)
+        if name is None:
+            raise AugerException('Please specify Experiment name...')
+        for exp_run in iter(Experiment(self.ctx, dataset, name).history()):
+            self.ctx.log("run id: {}, start tiem: {}, status: {}".format(
+                exp_run.get('id'),
+                exp_run.get('model_settings').get('start_time'),
+                exp_run.get('status')))
 
 
 @click.group('experiment', short_help='Auger experiment management')
@@ -66,13 +106,6 @@ def start(ctx):
     """
     ExperimentCmd(ctx).start()
 
-@click.command(short_help='Check Experiment\'s status')
-@pass_context
-def status(ctx):
-    """Check Experiment\'s status"""
-    ExperimentCmd(ctx).status()
-
-
 @click.command(short_help='Stop Experiment')
 @pass_context
 def stop(ctx):
@@ -80,10 +113,14 @@ def stop(ctx):
     ExperimentCmd(ctx).stop()
 
 @click.command(short_help='Show Experiment leaderboard')
+@click.argument('run-id', required=False, type=click.STRING)
 @pass_context
-def leaderboard(ctx):
-    """Show Experiment leaderboard"""
-    ExperimentCmd(ctx).leaderboard()
+def leaderboard(ctx, run_id):
+    """Show Experiment leaderboard for specified run id.
+       If run id is not provided, latest experiment run
+       leaderboard will be shown.
+    """
+    ExperimentCmd(ctx).leaderboard(run_id)
 
 @click.command(short_help='Show Experiment history')
 @pass_context
@@ -96,7 +133,6 @@ def history(ctx):
 def add_commands(ctx):
     command.add_command(list_cmd, name='list')
     command.add_command(start)
-    command.add_command(status)
     command.add_command(stop)
     command.add_command(leaderboard)
     command.add_command(history)
