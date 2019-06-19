@@ -44,17 +44,30 @@ class TestNewCommand():
     def test_full_set_of_arguments(self, runner, project):
         result = runner.invoke(
             cli, [
-                'new', 'test_project2',
+                'new', 'new_project',
                 '--model-type', 'regression',
                 '--target', 'target_column',
                 '--source', 'test_project/iris.csv'])
 
         assert result.exit_code == 0
         config_path = os.path.join(
-            os.getcwd(), 'test_project2', 'auger.yaml')
+            os.getcwd(), 'new_project', 'auger.yaml')
         config = ConfigYaml()
         config.load_from_file(config_path)
         assert config.model_type == 'regression'
         assert config.target == 'target_column'
         assert config.source == os.path.join(
             os.getcwd(), 'test_project', 'iris.csv')
+
+    def test_bad_source(self, log, runner, isolated):
+        result = runner.invoke(
+            cli, ['new', 'test_project', '--source', 'not_existing_file.csv'])
+        assert result.exit_code != 0
+        assert log.messages[-1].startswith("Can't find file to import:")
+
+    def test_source_wrong_extension(self, log, runner, isolated):
+        result = runner.invoke(
+            cli, ['new', 'test_project', '--source', 'file_with_wrong.extension'])
+        assert result.exit_code != 0
+        assert log.messages[-1] ==\
+             'Source file has to be one of the supported fomats: .csv, .arff'
