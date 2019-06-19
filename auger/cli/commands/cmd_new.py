@@ -44,7 +44,11 @@ class NewCmd(object):
 
         self.ctx.load_config(project_path)
         if self.source:
-            self.source = DataSet.verify(self.source)[0]
+            try:
+                self.source = DataSet.verify(self.source)[0]
+            except Exception as e:
+                self.ctx.log(str(e))
+                sys.exit(1)
 
         AugerConfig(self.ctx).config(
             target=self.target,

@@ -25,15 +25,15 @@ class TestNewCommand():
         assert config.project == 'test_project'
 
     def test_project_with_given_name_already_exists(
-            self, runner, log, isolated):
-        result1 = runner.invoke(cli, ['new', 'test_project'])
+            self, runner, log, project):
+        # result1 = runner.invoke(cli, ['new', 'test_project'])
         result = runner.invoke(cli, ['new', 'test_project'])
         assert result.exit_code != 0
         assert (log.records[-1].message ==
                 "Can't create 'test_project'. Folder already exists.")
 
-    def test_nested_project_forbidden(self, runner, log, isolated):
-        runner.invoke(cli, ['new', 'test_project'])
+    def test_nested_project_forbidden(self, runner, log, project):
+        # runner.invoke(cli, ['new', 'test_project'])
         os.chdir('test_project')
         result = runner.invoke(cli, ['new', 'test_project'])
         assert result.exit_code != 0
@@ -41,21 +41,20 @@ class TestNewCommand():
                 "Can't create 'test_project' inside a project."
                 " './auger.yaml' already exists")
 
-    def test_dataset(self, runner):
-        # TODO: dataset cration fact
-        # TODO: dataset parameters setting
-        assert False
-
-    def test_full_set_of_arguments(self, runner, isolated):
+    def test_full_set_of_arguments(self, runner, project):
         result = runner.invoke(
             cli, [
-                'new', 'test_project',
+                'new', 'test_project2',
                 '--model-type', 'regression',
-                '--target', 'target_column'])
+                '--target', 'target_column',
+                '--source', 'test_project/iris.csv'])
+
         assert result.exit_code == 0
         config_path = os.path.join(
-            os.getcwd(), 'test_project', 'auger.yaml')
+            os.getcwd(), 'test_project2', 'auger.yaml')
         config = ConfigYaml()
         config.load_from_file(config_path)
         assert config.model_type == 'regression'
         assert config.target == 'target_column'
+        assert config.source == os.path.join(
+            os.getcwd(), 'test_project', 'iris.csv')
