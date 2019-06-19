@@ -4,6 +4,7 @@ import os
 import sys
 
 from auger.api.dataset import DataSet
+from auger.api.hub.utils.exception import AugerException
 from auger.cli.utils.context import pass_context
 from auger.cli.utils.template import Template
 from auger.cli.utils.config import AugerConfig
@@ -20,49 +21,45 @@ class NewCmd(object):
 
     def mk_project_folder(self):
         if os.path.exists(os.path.join(os.getcwd(), 'auger.yaml')):
-            raise Exception(
-                "Can't create '%s' inside a project."
-                " './auger.yaml' already exists" %
-                self.project_name)
+            raise AugerException("Can't create '%s' inside a project."
+                         " './auger.yaml' already exists" % self.project_name)
         project_path = os.path.join(os.getcwd(), self.project_name)
         try:
             os.makedirs(project_path)
         except OSError as e:
             if e.errno == errno.EEXIST:
-                raise Exception(
+                raise AugerException(
                     "Can't create '%s'. Folder already exists." %
                     self.project_name)
-            raise
         self.ctx.log('Created project folder %s', self.project_name)
         return project_path
 
     def create_project(self):
         try:
             project_path = self.mk_project_folder()
-            Template.copy_config_files(project_path)
-
-            self.ctx.load_config(project_path)
-            if self.source:
-                self.source = DataSet.verify(self.source)[0]
-
-            AugerConfig(self.ctx).config(
-                target=self.target,
-                source=self.source,
-                model_type=self.model_type,
-                project_name=self.project_name)
-
-            self.ctx.log(
-                "Next, please go to project dir: cd %s\n"
-                "Select or create data set on Auger Cloud: "
-                "augerai dataset create|select\n"
-                "Configure your experiment by editing auger.yaml\n"
-                "And run the experiment: augerai experiment start\n"
-                "After that you can use your model: augerai model deploy && "
-                "augerai model predict <target_data>" % self.project_name)
-
-        except Exception as e:
-            self.ctx.log('%s', str(e))
+        except AugerException as e:
+            self.ctx.log(str(e))
             sys.exit(1)
+        Template.copy_config_files(project_path)
+
+        self.ctx.load_config(project_path)
+        if self.source:
+            self.source = DataSet.verify(self.source)[0]
+
+        AugerConfig(self.ctx).config(
+            target=self.target,
+            source=self.source,
+            model_type=self.model_type,
+            project_name=self.project_name)
+
+        self.ctx.log(
+            "Next, please go to project dir: cd %s\n"
+            "Select or create data set on Auger Cloud: "
+            "augerai dataset create|select\n"
+            "Configure your experiment by editing auger.yaml\n"
+            "And run the experiment: augerai experiment start\n"
+            "After that you can use your model: augerai model deploy && "
+            "augerai model predict <target_data>" % self.project_name)
 
 
 @click.command('new', short_help='Create new AugerAI project.')
