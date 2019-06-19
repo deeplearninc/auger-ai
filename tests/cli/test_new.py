@@ -24,8 +24,9 @@ class TestNewCommand():
         config.load_from_file(config_file)
         assert config.project == 'test_project'
 
-    def test_project_with_given_name_already_exists(self, runner, log, isolated):
-        runner.invoke(cli, ['new', 'test_project'])
+    def test_project_with_given_name_already_exists(
+            self, runner, log, isolated):
+        result1 = runner.invoke(cli, ['new', 'test_project'])
         result = runner.invoke(cli, ['new', 'test_project'])
         assert result.exit_code != 0
         assert (log.records[-1].message ==
@@ -56,5 +57,5 @@ class TestNewCommand():
             os.getcwd(), 'test_project', 'auger.yaml')
         config = ConfigYaml()
         config.load_from_file(config_path)
-        assert config.experiment.type == 'regression'
-        assert config.experiment.target == 'target_column'
+        assert config.model_type == 'regression'
+        assert config.target == 'target_column'
