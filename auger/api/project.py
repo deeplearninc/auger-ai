@@ -13,5 +13,3 @@ class Project(AugerProjectApi):
             raise AugerException('Can\'t find organization %s' % \
                 ctx.credentials.organisation)
         super(Project, self).__init__(org, project_name)
-        # patch request path
-        self._set_api_request_path('AugerProjectApi')

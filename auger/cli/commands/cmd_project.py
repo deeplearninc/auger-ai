@@ -70,7 +70,7 @@ class ProjectCmd(object):
         self.ctx.log('Selected Project %s' % name)
 
     def _set_project_config(self, name):
-        source = self.ctx.config['auger'].get('dataset/source', None)
+        source = self.ctx.config['auger'].get('source', None)
         AugerConfig(self.ctx).\
             set_project(name).\
             set_data_set(None, source).\

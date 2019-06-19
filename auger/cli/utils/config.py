@@ -15,9 +15,9 @@ class AugerConfig(object):
 
     @_with_auger_yaml
     def config(self, yaml, *args, **kwargs):
-        yaml['dataset']['source'] = \
+        yaml['source'] = \
             kwargs.get('source', '')
-        yaml['dataset']['name'] = \
+        yaml['dataset'] = \
             kwargs.get('data_set_name', '')
         yaml['experiment']['name'] = \
             kwargs.get('experiment_name', '')
@@ -30,8 +30,8 @@ class AugerConfig(object):
         if model_type:
             yaml['experiment']['metric'] = \
                 'f1_macro' if model_type == 'classification' else 'r2'
-        yaml['experiment']['type'] = model_type or ''
-        yaml['experiment']['target'] = kwargs.get('target', '')
+        yaml['model_type'] = model_type or ''
+        yaml['target'] = kwargs.get('target', '')
 
     @_with_auger_yaml
     def set_project(self, yaml, project_name):
@@ -39,8 +39,8 @@ class AugerConfig(object):
 
     @_with_auger_yaml
     def set_data_set(self, yaml, data_set_name, data_set_source):
-        yaml['dataset']['name'] = data_set_name
-        yaml['dataset']['source'] = data_set_source
+        yaml['dataset'] = data_set_name
+        yaml['source'] = data_set_source
 
     @_with_auger_yaml
     def set_experiment(self, yaml, experiment_name, experiment_session_id):

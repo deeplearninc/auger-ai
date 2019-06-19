@@ -2,23 +2,22 @@
 
 # Name of the Project on Auger Cloud
 project:
+# Data source - local file or remote url
+source:
 # DataSet on Auger Cloud
 dataset:
-  # Local file or remote url
-  # Will be used by dataset.create if not specified explicitly
-  source:
-  # Name of the DataSet on Auger Cloud
-  name:
+# Model type: classification|regression|timeseries
+model_type:
+# Target column name
+target:
+# List of columns to be excluded from the training data
+exclude:
 # Experiment
 experiment:
   # Experiment name (if not specified, will be set on the first run)
   name:
   # Latest experiment run id
   experiment_session_id:
-  # Model type: classification|regression|timeseries
-  type: classification
-  # Target column name
-  target:
   # Time series feature. If Data Source contains more then one DATETIME feature
   # you will have to explicitly specify feature to use as time series
   time_series:

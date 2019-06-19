@@ -5,8 +5,11 @@ from a2ml.api.auger.hub.utils.exception import AugerException
 class DataSet(AugerDataSetApi):
     """Auger Cloud Data Set(s) management"""
 
-    def __init__(self, ctx, project, data_set_name=None):
-        super(DataSet, self).__init__(project, data_set_name)
+    def __init__(self, ctx, project, data_set_name=None, data_set_id=None):
+        if project is None:
+            raise AugerException(
+                'Project is required to construct DataSet object...')
+        super(DataSet, self).__init__(project, data_set_name, data_set_id)
         self.project = project
         self.ctx = ctx
 
