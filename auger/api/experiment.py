@@ -1,17 +1,17 @@
 from datetime import datetime
 
-from a2ml.api.auger.hub.experiment import AugerExperimentApi
-from a2ml.api.auger.hub.utils.exception import AugerException
-from a2ml.api.auger.hub.experiment import AugerExperimentSessionApi
+from a2ml.api.auger.cloud.experiment import AugerExperimentApi
+from a2ml.api.auger.cloud.utils.exception import AugerException
+from a2ml.api.auger.cloud.experiment import AugerExperimentSessionApi
 
 
 class Experiment(AugerExperimentApi):
     """Auger Cloud Experiments(s) management"""
 
     def __init__(self, ctx, dataset, experiment_name=None):
-        super(Experiment, self).__init__(dataset.project, experiment_name)
+        super(Experiment, self).__init__(
+            ctx, dataset.project, experiment_name)
         self.dataset = dataset
-        self.ctx = ctx
 
     def list(self):
         data_set_id = self.dataset.oid
@@ -49,7 +49,8 @@ class Experiment(AugerExperimentApi):
 
     def stop(self):
         run_id = self._get_latest_run()
-        session_api = AugerExperimentSessionApi(None, None, run_id)
+        session_api = AugerExperimentSessionApi(
+            self.ctx, None, None, run_id)
         return session_api.interrupt()
 
     def leaderboard(self, run_id=None):
@@ -59,20 +60,21 @@ class Experiment(AugerExperimentApi):
         if run_id is None:
             return None, None
         else:
-            session_api = AugerExperimentSessionApi(None, None, run_id)
+            session_api = AugerExperimentSessionApi(
+                self.ctx, None, None, run_id)
             status = session_api.properties().get('status')
             return session_api.get_leaderboard(), status
 
     def history(self):
-        session_api = AugerExperimentSessionApi(self)
-        return session_api.list()
+        return AugerExperimentSessionApi(self.ctx, self).list()
 
     def _get_latest_run(self):
         latest = [None, None]
         for run in iter(self.history()):
-            start_time = datetime.strptime(
-                run.get('model_settings').get('start_time'),
-                '%Y-%m-%d %H:%M:%S.%f')
-            if (latest[0] is None) or (latest[1] < start_time):
-                latest = [run.get('id'), start_time]
+            start_time = run.get('model_settings').get('start_time')
+            if start_time:
+                start_time = datetime.strptime(
+                    start_time, '%Y-%m-%d %H:%M:%S.%f')
+                if (latest[0] is None) or (latest[1] < start_time):
+                    latest = [run.get('id'), start_time]
         return latest[0]

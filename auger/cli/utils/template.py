@@ -10,5 +10,4 @@ class Template(object):
         for filename in os.listdir(template_dir):
             src_config = os.path.join(template_dir, filename)
             dest_config = os.path.join(experiment_path, '%s' % filename)
-            print(src_config, dest_config)
             shutil.copy2(src_config, dest_config)

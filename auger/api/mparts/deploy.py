@@ -1,10 +1,10 @@
 import os
 import subprocess
 
-from a2ml.api.auger.hub.cluster import AugerClusterApi
-from a2ml.api.auger.hub.pipeline import AugerPipelineApi
-from a2ml.api.auger.hub.utils.exception import AugerException
-from a2ml.api.auger.hub.pipeline_file import AugerPipelineFileApi
+from a2ml.api.auger.cloud.cluster import AugerClusterApi
+from a2ml.api.auger.cloud.pipeline import AugerPipelineApi
+from a2ml.api.auger.cloud.utils.exception import AugerException
+from a2ml.api.auger.cloud.pipeline_file import AugerPipelineFileApi
 
 
 class ModelDeploy(object):
@@ -26,7 +26,8 @@ class ModelDeploy(object):
 
         self._start_project()
 
-        pipeline_properties = AugerPipelineApi(None).create(model_id)
+        pipeline_properties = AugerPipelineApi(
+            self.ctx, None).create(model_id)
 
         self.ctx.log('Deployed Model on Auger Cloud. Model id is %s' % \
             pipeline_properties.get('id'))
@@ -39,7 +40,7 @@ class ModelDeploy(object):
 
             self._start_project()
 
-            pipeline_file_api = AugerPipelineFileApi(None)
+            pipeline_file_api = AugerPipelineFileApi(self.ctx, None)
             pipeline_file_properties = pipeline_file_api.create(model_id)
             downloaded_model_file = pipeline_file_api.download(
                 pipeline_file_properties['signed_s3_model_path'],
@@ -65,7 +66,7 @@ class ModelDeploy(object):
             self.project.start()
 
     def _docker_pull_image(self):
-        cluster_settings = AugerClusterApi.get_cluster_settings()
+        cluster_settings = AugerClusterApi.get_cluster_settings(self.ctx)
         docker_tag = cluster_settings.get('kubernetes_stack')
 
         try:
