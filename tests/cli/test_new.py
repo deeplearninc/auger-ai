@@ -26,7 +26,7 @@ class TestNewCommand():
 
     def test_project_with_given_name_already_exists(
             self, runner, log, project):
-        # result1 = runner.invoke(cli, ['new', 'test_project'])
+        runner.invoke(cli, ['new', 'test_project'])
         result = runner.invoke(cli, ['new', 'test_project'])
         assert result.exit_code != 0
         assert (log.records[-1].message ==

@@ -38,3 +38,4 @@ class TestAuthCLI():
     def test_logout_not_logged(self, log, runner, isolated):
         result = runner.invoke(cli, ['auth', 'logout'])
         assert (log.records[-1].message == 'You are not logged in Auger.')
+        assert result.exit_code != 0
