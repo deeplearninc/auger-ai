@@ -20,7 +20,7 @@ class AuthCmd(object):
 @click.group('auth', short_help='Authenticate with Auger Cloud.')
 @pass_context
 def command(ctx):
-    """Authenticate with Auger Hub."""
+    """Authenticate with Auger Cloud."""
     ctx.setup_logger(format='')
 
 @click.command(short_help='Login to Auger.')

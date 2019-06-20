@@ -1,7 +1,7 @@
 from functools import wraps
 from auger.api.project import Project
 from auger.api.dataset import DataSet
-from a2ml.api.auger.hub.utils.exception import AugerException
+from a2ml.api.auger.cloud.utils.exception import AugerException
 
 
 def error_handler(decorated):

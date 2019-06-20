@@ -9,7 +9,7 @@ from auger.cli.utils.context import pass_context
 from auger.cli.utils.formatter import print_table
 from auger.cli.utils.decorators import \
     error_handler, authenticated, with_project, with_dataset
-from a2ml.api.auger.hub.utils.exception import AugerException
+from a2ml.api.auger.cloud.utils.exception import AugerException
 
 
 class ExperimentCmd(object):

@@ -3,7 +3,7 @@ import click
 from auger.api.project import Project
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
-from a2ml.api.auger.hub.utils.exception import AugerException
+from a2ml.api.auger.cloud.utils.exception import AugerException
 from auger.cli.utils.decorators import error_handler, authenticated
 
 
@@ -24,7 +24,7 @@ class ProjectCmd(object):
     @error_handler
     @authenticated
     def create(self, name):
-        old_name, name, project = self._setup_op(name)
+        old_name, name, project = self._setup_op(name, False)
         project.create()
         if name != old_name:
             self._set_project_config(name)
@@ -64,7 +64,7 @@ class ProjectCmd(object):
     @error_handler
     @authenticated
     def select(self, name):
-        old_name, name, project = self._setup_op(name)
+        old_name, name, project = self._setup_op(name, False)
         if name != old_name:
             self._set_project_config(name)
         self.ctx.log('Selected Project %s' % name)
@@ -76,43 +76,45 @@ class ProjectCmd(object):
             set_data_set(None, source).\
             set_experiment(None, None)
 
-    def _setup_op(self, name):
+    def _setup_op(self, name, verify_project=True):
         old_name = self.ctx.config['auger'].get('project', None)
         if name is None:
             name = old_name
         if name is None:
-            raise AugerException('Please specify project name...')
+            raise AugerException('Please specify Project name...')
 
         project = Project(self.ctx, name)
-        if project.properties() is None:
-            raise AugerException('Project %s doesn\'t exists...' % name)
+
+        if verify_project:
+            if project.properties() is None:
+                raise AugerException('Project %s doesn\'t exists...' % name)
 
         return old_name, name, project
 
-@click.group('project', short_help='Auger project management')
+@click.group('project', short_help='Auger Cloud Projects management')
 @pass_context
 def command(ctx):
-    """Auger project management"""
+    """Auger Clous Project(s) management"""
     ctx.setup_logger(format='')
 
-@click.command(short_help='List Auger projects')
+@click.command(short_help='List Projects')
 @pass_context
 def list_cmd(ctx):
-    """List Auger projects"""
+    """List Projects"""
     ProjectCmd(ctx).list()
 
-@click.command(short_help='Create project on Auger Cloud')
+@click.command(short_help='Create Project')
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
 def create(ctx, name):
-    """Create project on Auger Cloud"""
+    """Create Project"""
     ProjectCmd(ctx).create(name)
 
-@click.command(short_help='Delete project on Auger Cloud')
+@click.command(short_help='Delete Project')
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
 def delete(ctx, name):
-    """Delete project on Auger Cloud"""
+    """Delete Project"""
     ProjectCmd(ctx).delete(name)
 
 @click.command(short_help='Start Project')
@@ -120,7 +122,7 @@ def delete(ctx, name):
 @pass_context
 def start(ctx, name):
     """Start Project.
-       If name is not specified will start project set in auger.yaml/project
+       If name is not specified will start Project set in auger.yaml/project
     """
     ProjectCmd(ctx).start(name)
 
@@ -129,7 +131,7 @@ def start(ctx, name):
 @pass_context
 def stop(ctx, name):
     """Stop Project.
-       If name is not specified will stop project set in auger.yaml/project
+       If name is not specified will stop Project set in auger.yaml/project
     """
     ProjectCmd(ctx).stop(name)
 

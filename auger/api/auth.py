@@ -1,8 +1,8 @@
 import sys
 
 from auger.api.credentials import Credentials
-from a2ml.api.auger.hub.auth import AugerAuthApi
-from a2ml.api.auger.hub.utils.exception import AugerException
+from a2ml.api.auger.cloud.auth import AugerAuthApi
+from a2ml.api.auger.cloud.utils.exception import AugerException
 
 
 class AugerAuth(object):
@@ -19,8 +19,8 @@ class AugerAuth(object):
             if url is None:
                 url = self.credentials.api_url
 
-            token = AugerAuthApi().login(
-                self.ctx, username, password, organisation, url)
+            token = AugerAuthApi(self.ctx).login(
+                username, password, organisation, url)
 
             self.credentials.token = token
             self.credentials.username = username
