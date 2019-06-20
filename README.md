@@ -21,6 +21,8 @@ auger.yaml provides local context for the Project and keeps settings for Experim
   all further operations with DataSet(s), Experiment(s), and Model(s) will be
   performed in context of this Project.  
   - delete - deletes Project on Auger Cloud and clears Project name from auger.yaml
+  - start - starts Project cluster.
+  - stop - stops Project cluster.
 
 - dataset
   - list - list all DataSets(s) for the Project.

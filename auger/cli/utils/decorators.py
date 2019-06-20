@@ -1,4 +1,8 @@
+from functools import wraps
 from auger.api.project import Project
+from auger.api.dataset import DataSet
+from a2ml.api.auger.hub.utils.exception import AugerException
+
 
 def error_handler(decorated):
     def wrapper(self, *args, **kwargs):
@@ -18,18 +22,39 @@ def authenticated(decorated):
         return decorated(self, *args, **kwargs)
     return wrapper
 
-def with_project(decorated):
-    def wrapper(self, *args, **kwargs):
-        project_name = self.ctx.config['auger'].get('project', None)
-        if project_name is None:
-            raise Exception(
-                'Please specify your project name (auger.yaml/project)...')
-        project = Project(self.ctx, project_name)
-        project_properties = project.properties()
-        if project_properties is None:
+def _get_project(self):
+    project_name = self.ctx.config['auger'].get('project', None)
+    if project_name is None:
+        raise AugerException(
+            'Please specify project name in auger.yaml/project...')
+    project = Project(self.ctx, project_name)
+    project_properties = project.properties()
+    if project_properties is None:
+        if autocreate:
             self.ctx.log(
-                'Can\'t find project %s on the Auger Cloud.'
-                ' Creating...' % project_name)
+                'Can\'t find project %s on the Auger Cloud. '
+                'Creating...' % project_name)
             project.create()
-        return decorated(self, project, *args, **kwargs)
+        else:
+            raise AugerException('Can\'t find project %s' % project_name)
+    return project
+
+def with_project(autocreate=False):
+    def decorator(decorated):
+        @wraps(decorated)
+        def wrapper(self, *args, **kwargs):
+            project = _get_project(self)
+            return decorated(self, project, *args, **kwargs)
+        return wrapper
+    return decorator
+
+def with_dataset(decorated):
+    def wrapper(self, *args, **kwargs):
+        project = _get_project(self)
+        data_set_name = self.ctx.config['auger'].get('dataset', None)
+        if data_set_name is None:
+            raise AugerException(
+                'Please specify dataset name in auger.yaml/dataset...')
+        dataset = DataSet(self.ctx, project, data_set_name)
+        return decorated(self, dataset, *args, **kwargs)
     return wrapper
