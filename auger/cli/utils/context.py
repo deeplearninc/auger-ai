@@ -2,8 +2,9 @@ import os
 import sys
 import click
 import logging
-from a2ml.api.auger.hub.hub_api import HubApi
+
 from auger.api.credentials import Credentials
+from a2ml.api.auger.hub.rest_api import RestApi
 from auger.cli.utils.config_yaml import ConfigYaml
 
 log = logging.getLogger("auger")
@@ -21,7 +22,7 @@ class Context(object):
         self.name = name
         self.debug = self.config['auger'].get('debug', False)
         self.credentials = Credentials(self.config['auger']).load()
-        HubApi().setup(self, self.credentials.api_url, self.credentials.token)
+        RestApi().setup(self, self.credentials.api_url, self.credentials.token)
 
     def copy(self, name):
         new = Context(name)
