@@ -16,6 +16,7 @@ class ProjectCmd(object):
     @authenticated
     def list(self):
         count = 0
+        self.ctx.log("BOOM3")
         for project in iter(Project(self.ctx).list()):
             self.ctx.log(project.get('name'))
             count += 1

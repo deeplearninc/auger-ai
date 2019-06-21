@@ -1,7 +1,7 @@
 import os
 import json
 
-from auger.api.hub.utils.exception import NotAuthenticatedException
+from auger.api.cloud.utils.exception import NotAuthenticatedException
 
 
 class Credentials(object):

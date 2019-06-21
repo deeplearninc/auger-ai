@@ -38,8 +38,10 @@ class AugerAuth(object):
             self.ctx.log(exc_text)
 
     def logout(self):
+
         if self.credentials.token is None:
             self.ctx.log('You are not logged in Auger.')
+            sys.exit(1)
         else:
             self.credentials.token = None
             self.credentials.api_url = None
@@ -50,6 +52,7 @@ class AugerAuth(object):
     def whoami(self):
         if self.credentials.token is None:
             self.ctx.log('Please login to Auger...')
+            sys.exit(1)
         else:
             self.ctx.log(
                 '%s %s %s' % (

@@ -3,8 +3,8 @@ import sys
 
 from auger.api.project import Project
 from auger.api.dataset import DataSet
-from auger.api.cloud.utils.exception import \
-     AugerException, NotAuthenticatedException
+from auger.api.cloud.utils.exception import (
+    AugerException, NotAuthenticatedException)
 
 
 def error_handler(decorated):
@@ -16,6 +16,7 @@ def error_handler(decorated):
                 import traceback
                 traceback.print_exc()
             self.ctx.log(str(exc))
+            sys.exit(1)
     return wrapper
 
 

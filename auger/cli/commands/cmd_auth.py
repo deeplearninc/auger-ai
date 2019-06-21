@@ -13,6 +13,7 @@ class AuthCmd(object):
         AugerAuth(self.ctx).login(username, password, organisation, url)
 
     def logout(self):
+
         AugerAuth(self.ctx).logout()
 
     def whoami(self):

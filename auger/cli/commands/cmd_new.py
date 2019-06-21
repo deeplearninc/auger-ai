@@ -4,7 +4,7 @@ import os
 import sys
 
 from auger.api.dataset import DataSet
-from auger.api.hub.utils.exception import AugerException
+from auger.api.cloud.utils.exception import AugerException
 from auger.cli.utils.context import pass_context
 from auger.cli.utils.template import Template
 from auger.cli.utils.config import AugerConfig

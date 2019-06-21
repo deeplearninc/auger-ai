@@ -8,8 +8,8 @@ class TestModelCLI():
         print(log.messages)
         assert result.exit_code == 0
 
-    def test_predict(self, log, runner, isolated, authenticated):
-        result = runner.invoke(cli, ['model', 'predict'])
+    def test_predict(self, log, runner, project, authenticated):
+        result = runner.invoke(cli, ['model', 'predict', 'iris.csv'])
         print(result.output)
         print(log.messages)
         assert result.exit_code == 0
