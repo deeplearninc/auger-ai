@@ -93,7 +93,7 @@ class ProjectCmd(object):
 @click.group('project', short_help='Auger Cloud Projects management')
 @pass_context
 def command(ctx):
-    """Auger Clous Project(s) management"""
+    """Auger Cloud Project(s) management"""
     ctx.setup_logger(format='')
 
 @click.command(short_help='List Projects')
