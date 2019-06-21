@@ -25,8 +25,6 @@ class DataSetCmd(object):
     @authenticated
     @with_project(autocreate=True)
     def create(self, project, source):
-        if source is None:
-            source = self.ctx.config['auger'].get('source')
         dataset = DataSet(self.ctx, project).create(source)
         AugerConfig(self.ctx).set_data_set(dataset.name, source)
         self.ctx.log('Created DataSet %s' % dataset.name)
@@ -36,21 +34,16 @@ class DataSetCmd(object):
     @with_project(autocreate=False)
     def delete(self, project, name):
         if name is None:
-            name = self.ctx.config['auger'].get('dataset', None)
+            name = self.ctx.get_config('auger').get('dataset', None)
         DataSet(self.ctx, project, name).delete()
-        if name == self.ctx.config['auger'].get('dataset', None):
-            source = self.ctx.config['auger'].get('source', None)
-            AugerConfig(self.ctx).\
-                set_data_set(None, source).\
-                set_experiment(None, None)
+        if name == self.ctx.get_config('auger').get('dataset', None):
+            AugerConfig(self.ctx).set_data_set(None).set_experiment(None)
         self.ctx.log('Deleted dataset %s' % name)
 
     def select(self, name):
-        old_name = self.ctx.config['auger'].get('dataset', None)
+        old_name = self.ctx.get_config('auger').get('dataset', None)
         if name != old_name:
-            AugerConfig(self.ctx).\
-                set_data_set(name, None).\
-                set_experiment(None, None)
+            AugerConfig(self.ctx).set_data_set(name, '').set_experiment(None)
         self.ctx.log('Selected DataSet %s' % name)
 
 

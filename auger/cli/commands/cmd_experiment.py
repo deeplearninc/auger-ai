@@ -31,7 +31,8 @@ class ExperimentCmd(object):
     @authenticated
     @with_dataset
     def start(self, dataset):
-        experiment_name = self.ctx.config['auger'].get('experiment/name', None)
+        experiment_name = \
+            self.ctx.get_config('auger').get('experiment/name', None)
         eperiment_name, session_id = \
             Experiment(self.ctx, dataset, experiment_name).start()
         AugerConfig(self.ctx).set_experiment(eperiment_name, session_id)
@@ -40,7 +41,7 @@ class ExperimentCmd(object):
     @authenticated
     @with_dataset
     def stop(self, dataset):
-        name = self.ctx.config['auger'].get('experiment/name', None)
+        name = self.ctx.get_config('auger').get('experiment/name', None)
         if name is None:
             raise AugerException('Please specify Experiment name...')
         if Experiment(self.ctx, dataset, name).stop():
@@ -52,7 +53,7 @@ class ExperimentCmd(object):
     @authenticated
     @with_dataset
     def leaderboard(self, dataset, run_id):
-        name = self.ctx.config['auger'].get('experiment/name', None)
+        name = self.ctx.get_config('auger').get('experiment/name', None)
         if name is None:
             raise AugerException('Please specify Experiment name...')
         leaderboard, status = Experiment(
@@ -76,7 +77,7 @@ class ExperimentCmd(object):
     @authenticated
     @with_dataset
     def history(self, dataset):
-        name = self.ctx.config['auger'].get('experiment/name', None)
+        name = self.ctx.get_config('auger').get('experiment/name', None)
         if name is None:
             raise AugerException('Please specify Experiment name...')
         for exp_run in iter(Experiment(self.ctx, dataset, name).history()):
