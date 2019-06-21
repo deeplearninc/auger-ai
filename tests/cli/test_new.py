@@ -1,7 +1,7 @@
 import os
 
 from auger.cli.cli import cli
-from auger.cli.utils.config_yaml import ConfigYaml
+from auger.api.utils.config_yaml import ConfigYaml
 
 
 class TestNewCommand():

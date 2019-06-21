@@ -91,46 +91,26 @@ class ProjectCmd(object):
 
         return old_name, name, project
 
-<<<<<<< bf590abeca6b0b60e4ca973dc8e4240c54621c91
 @click.group('project', short_help='Auger Cloud Projects management')
-=======
-
-@click.group('project', short_help='Auger project management')
->>>>>>> fixed all flake8 issues
 @pass_context
 def command(ctx):
     """Auger Clous Project(s) management"""
     ctx.setup_logger(format='')
 
-<<<<<<< bf590abeca6b0b60e4ca973dc8e4240c54621c91
 @click.command(short_help='List Projects')
-=======
-
-@click.command(short_help='List Auger projects')
->>>>>>> fixed all flake8 issues
 @pass_context
 def list_cmd(ctx):
     """List Projects"""
     ProjectCmd(ctx).list()
 
-<<<<<<< bf590abeca6b0b60e4ca973dc8e4240c54621c91
 @click.command(short_help='Create Project')
-=======
-
-@click.command(short_help='Create project on Auger Cloud')
->>>>>>> fixed all flake8 issues
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
 def create(ctx, name):
     """Create Project"""
     ProjectCmd(ctx).create(name)
 
-<<<<<<< bf590abeca6b0b60e4ca973dc8e4240c54621c91
 @click.command(short_help='Delete Project')
-=======
-
-@click.command(short_help='Delete project on Auger Cloud')
->>>>>>> fixed all flake8 issues
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
 def delete(ctx, name):
