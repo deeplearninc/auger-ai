@@ -70,14 +70,14 @@ class ProjectCmd(object):
         self.ctx.log('Selected Project %s' % name)
 
     def _set_project_config(self, name):
-        source = self.ctx.config['auger'].get('source', None)
+        source = self.ctx.get_config('auger').get('source', None)
         AugerConfig(self.ctx).\
             set_project(name).\
-            set_data_set(None, source).\
-            set_experiment(None, None)
+            set_data_set(None).\
+            set_experiment(None)
 
     def _setup_op(self, name, verify_project=True):
-        old_name = self.ctx.config['auger'].get('project', None)
+        old_name = self.ctx.get_config('auger').get('project', None)
         if name is None:
             name = old_name
         if name is None:
@@ -85,9 +85,8 @@ class ProjectCmd(object):
 
         project = Project(self.ctx, name)
 
-        if verify_project:
-            if project.properties() is None:
-                raise AugerException('Project %s doesn\'t exists...' % name)
+        if verify_project and not project.is_exists:
+            raise AugerException('Project %s doesn\'t exists...' % name)
 
         return old_name, name, project
 

@@ -23,7 +23,7 @@ def authenticated(decorated):
     return wrapper
 
 def _get_project(self):
-    project_name = self.ctx.config['auger'].get('project', None)
+    project_name = self.ctx.get_config('auger').get('project', None)
     if project_name is None:
         raise AugerException(
             'Please specify project name in auger.yaml/project...')
@@ -51,7 +51,7 @@ def with_project(autocreate=False):
 def with_dataset(decorated):
     def wrapper(self, *args, **kwargs):
         project = _get_project(self)
-        data_set_name = self.ctx.config['auger'].get('dataset', None)
+        data_set_name = self.ctx.get_config('auger').get('dataset', None)
         if data_set_name is None:
             raise AugerException(
                 'Please specify dataset name in auger.yaml/dataset...')

@@ -28,7 +28,7 @@ class ModelPredict():
         self.ctx.log('Predictions stored in %s' % predicted)
 
     def _predict_on_cloud(self, filename, model_id, threshold=None):
-        target = self.ctx.config['config'].get('target', None)
+        target = self.ctx.get_config('config').get('target', None)
         df = DataFrame.load(filename, target)
 
         pipeline_api = AugerPipelineApi(self.ctx, None, model_id)
