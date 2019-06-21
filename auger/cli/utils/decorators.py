@@ -22,7 +22,7 @@ def authenticated(decorated):
         return decorated(self, *args, **kwargs)
     return wrapper
 
-def _get_project(self):
+def _get_project(self, autocreate):
     project_name = self.ctx.get_config('auger').get('project', None)
     if project_name is None:
         raise AugerException(
@@ -43,7 +43,7 @@ def with_project(autocreate=False):
     def decorator(decorated):
         @wraps(decorated)
         def wrapper(self, *args, **kwargs):
-            project = _get_project(self)
+            project = _get_project(self, autocreate)
             return decorated(self, project, *args, **kwargs)
         return wrapper
     return decorator
