@@ -1,7 +1,7 @@
 import click
+import auger.api.utils.context
 
-
-class Context(auger.api.utils.Context):
+class Context(auger.api.utils.context.Context):
     """Auger CLI Context."""
     def __init__(self, name=''):
         super(Context, self).__init__(name)
