@@ -1,6 +1,7 @@
 import logging
 import shutil
 import os
+import json
 
 import pytest
 from click.testing import CliRunner
@@ -8,6 +9,12 @@ from click.testing import CliRunner
 from auger.api.credentials import Credentials
 from auger.api.cloud.rest_api import RestApi
 
+TEST_CREDENTIALS = {
+    'username': 'test_user',
+    'organisation': 'auger',
+    'url': 'https://example.com',
+    'token': 'fake_token',
+}
 
 @pytest.fixture
 def runner():
@@ -32,15 +39,18 @@ def project(isolated):
         os.path.dirname(os.path.abspath(__file__)), '..', 'fixtures',
         'test_project')
     shutil.copytree(source, './test_project')
+    os.chdir('test_project')
 
 
 @pytest.fixture
-def authenticated(monkeypatch):
-    monkeypatch.setattr(Credentials, 'verify', lambda x: True)
+def authenticated(monkeypatch, isolated):
+    monkeypatch.setenv("AUGER_CREDENTIALS", json.dumps(TEST_CREDENTIALS))
+    monkeypatch.setenv("AUGER_CREDENTIALS_PATH", os.getcwd())
 
 
-@pytest.fixture(scope="function", autouse=True)
-def rest_api_intercept(monkeypatch):
-    def call_ex(self, *args, **kwargs):
-        print(*args, **kwargs)
-    monkeypatch.setattr(RestApi, 'call_ex', call_ex)
+@pytest.fixture(autouse=True)
+def no_requests(monkeypatch):
+    def call_ex(*args, **kwargs):
+        print("CALLED call_ex(", args, kwargs, ")")
+        return {}
+    monkeypatch.setattr(RestApi, "call_ex", call_ex)

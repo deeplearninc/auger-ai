@@ -16,7 +16,6 @@ class ProjectCmd(object):
     @authenticated
     def list(self):
         count = 0
-        self.ctx.log("BOOM3")
         for project in iter(Project(self.ctx).list()):
             self.ctx.log(project.get('name'))
             count += 1
@@ -94,7 +93,7 @@ class ProjectCmd(object):
 @click.group('project', short_help='Auger Cloud Projects management')
 @pass_context
 def command(ctx):
-    """Auger Clous Project(s) management"""
+    """Auger Cloud Project(s) management"""
     ctx.setup_logger(format='')
 
 @click.command(short_help='List Projects')

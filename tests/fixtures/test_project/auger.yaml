@@ -1,11 +1,11 @@
 ---
-
+debug: true
 # Name of the Project on Auger Cloud
 project: test_project
 # Data source - local file or remote url
 source: iris.csv
 # DataSet on Auger Cloud
-dataset:
+dataset: iris-1.csv
 # Model type: classification|regression|timeseries
 model_type: classification
 # Target column name
@@ -15,7 +15,7 @@ exclude:
 # Experiment
 experiment:
   # Experiment name (if not specified, will be set on the first run)
-  name:
+  name: iris-1.csv-experiment
   # Latest experiment run id
   experiment_session_id:
   # Time series feature. If Data Source contains more then one DATETIME feature

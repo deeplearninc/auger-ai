@@ -26,6 +26,7 @@ class TestNewCommand():
 
     def test_project_with_given_name_already_exists(
             self, runner, log, project):
+        os.chdir('..')
         runner.invoke(cli, ['new', 'test_project'])
         result = runner.invoke(cli, ['new', 'test_project'])
         assert result.exit_code != 0
@@ -33,15 +34,14 @@ class TestNewCommand():
                 "Can't create 'test_project'. Folder already exists.")
 
     def test_nested_project_forbidden(self, runner, log, project):
-        # runner.invoke(cli, ['new', 'test_project'])
-        os.chdir('test_project')
         result = runner.invoke(cli, ['new', 'test_project'])
         assert result.exit_code != 0
         assert (log.records[-1].message ==
                 "Can't create 'test_project' inside a project."
                 " './auger.yaml' already exists")
 
-    def test_full_set_of_arguments(self, runner, project):
+    def test_full_set_of_arguments(self, log, runner, isolated, project):
+        os.chdir('..')
         result = runner.invoke(
             cli, [
                 'new', 'new_project',

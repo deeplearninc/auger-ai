@@ -39,5 +39,6 @@ class AugerConfig(object):
             yaml['source'] = data_set_source
 
     @_with_auger_yaml
-    def set_experiment(self, yaml, experiment_name):
+    def set_experiment(self, yaml, experiment_name, session_id=None):
         yaml['experiment']['name'] = experiment_name
+        yaml['experiment']['experiment_session_id'] = session_id

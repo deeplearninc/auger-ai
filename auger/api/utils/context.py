@@ -49,6 +49,7 @@ class Context(object):
         if os.path.isfile(name):
             config.load_from_file(name)
         self.config = config
+        return self.config
 
     @staticmethod
     def setup_logger(format='%(asctime)s %(name)s | %(message)s'):

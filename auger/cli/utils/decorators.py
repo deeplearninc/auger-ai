@@ -59,7 +59,7 @@ def with_project(autocreate=False):
 
 def with_dataset(decorated):
     def wrapper(self, *args, **kwargs):
-        project = _get_project(self)
+        project = _get_project(self, False)
         data_set_name = self.ctx.get_config('auger').get('dataset', None)
         if data_set_name is None:
             raise AugerException(
