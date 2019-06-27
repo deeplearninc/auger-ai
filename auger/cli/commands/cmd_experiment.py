@@ -79,7 +79,7 @@ class ExperimentCmd(object):
         if name is None:
             raise AugerException('Please specify Experiment name...')
         for exp_run in iter(Experiment(self.ctx, dataset, name).history()):
-            self.ctx.log("run id: {}, start tiem: {}, status: {}".format(
+            self.ctx.log("run id: {}, start time: {}, status: {}".format(
                 exp_run.get('id'),
                 exp_run.get('model_settings').get('start_time'),
                 exp_run.get('status')))
