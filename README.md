@@ -216,10 +216,11 @@ DataSet for training on Auger Cloud.
   ```
 
 ### auger.api.Experiment
+Experiment searches for the best Model(s) for a given DataSet.
 
 - **Experiment(context, dataset, experiment_name)** - constructs Experiment instance.
   - context - instance of auger.api.Context.
-  - project - instance of auger.api.DataSet pointing to existing remote DataSet
+  - dataset - instance of auger.api.DataSet pointing to existing remote DataSet
     which will be used to search for the best Model.
   - experiment_name - name of the existing or new Experiment, optional.
 
@@ -364,7 +365,55 @@ DataSet for training on Auger Cloud.
   ```
 
 ### auger.api.Model
+Deploys or predicts using one of the Models from the Project Experiment(s)
+leaderboards.
 
+- **Model(context, project)** - constructs Model instance.
+  - context - instance of auger.api.Context.
+  - project - instance of auger.api.Project pointing to existing remote Project.
+
+- **list()** - lists all deployed models for a Project; auger.ai don't keep
+  track of locally deployed models. Returns iterator where each item is
+  dictionary with deployed Model properties. Throws exception if can't
+  validate credentials or network connection error.
+
+- **deploy(model_id, locally)** - deploys selected model locally or on
+  Auger Cloud. Returns deployed model id.
+  - model_id - id of the model from the any Experiment leaderboard
+  - locally - deploys model locally if True, on Auger Cloud if False; optional,
+    default is False.
+
+  Throws exception if can't validate credentials, project of model doesn't exist,
+  or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  # deploys model locally
+  Model(self.ctx, project).deploy(model_id, True)
+  ```
+
+- **predict(filename, model_id, threshold, locally)** - predicts using deployed
+  model. Predictions stored next to the file with data to be
+  predicted on; file name will be appended with suffix `_predicted`.
+  - filename - file with data to be predicted
+  - model_id - id of the deployed model
+  - threshold - prediction threshold
+  - locally - if True predict using locally deployed model, predict using model
+    deployed on Auger Cloud
+
+  Throws exception if can't validate credentials, project of model doesn't exist,
+  or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  # predict on the locally deployed model
+  Model(self.ctx, project).predict('../irises.csv', model_id, True)
+  # result will be stored in ../irises_predicted.csv
+  ```
 
 ## Development Setup
 
