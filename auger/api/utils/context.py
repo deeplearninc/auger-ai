@@ -13,7 +13,7 @@ class Context(object):
 
     def __init__(self, name=''):
         super(Context, self).__init__()
-        self.config = self.load_config()
+        self.load_config()
         if name and len(name) > 0:
             self.name = "{:<9}".format('[%s]' % name)
         else:
@@ -48,7 +48,8 @@ class Context(object):
         name = os.path.abspath(os.path.join(path, 'auger.yaml'))
         if os.path.isfile(name):
             config.load_from_file(name)
-        return config
+        self.config = config
+        return self.config
 
     @staticmethod
     def setup_logger(format='%(asctime)s %(name)s | %(message)s'):
