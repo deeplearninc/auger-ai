@@ -49,7 +49,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
 ## Base Classes
 ### auger.api.Context
 Context provides environment to run Auger Experiments and Models:
-- loads Auger credentials and initializes Auger REST API to communicate
+- loads Auger Credentials and initializes Auger REST API to communicate
 with remote Auger Cloud;
 - loads Auger settings from auger.yaml and provides access to these settings
 to Auger classes and business objects;
@@ -68,18 +68,19 @@ Credentials lookup and loading order:
 ### auger.api.Project
 Project provides interface to Auger Project.
 
-- **Project(context, project_name)**
-  - context - instance of auger.api.Context
+- **Project(context, project_name)** - constructs Project instance.
+  - context - instance of auger.api.Context.
   - project_name - name of the existing or new Project, optional.
 
 - **list()** - lists all Projects in your Organization. Returns iterator where
-  each item is dictionary with Project properties
+  each item is dictionary with Project properties. Throws exception if can't
+    validate credentials or network connection error.
 
   Example:
   ```
   ctx = Context()
   for project in iter(Project(ctx).list()):
-    self.ctx.log(project.get('name'))
+    ctx.log(project.get('name'))
   ```
 
 - **create()** - creates Project on Auger Cloud. Throws exception if can't
@@ -93,7 +94,7 @@ Project provides interface to Auger Project.
   ```
 
 - **delete()** - deletes Project on Auger Cloud. Throws exception if can't
-  validate credentials, Project with such name doesn't exists, or network
+  validate credentials, Project with such name doesn't exist, or network
   connection error.
 
   Example:
@@ -131,6 +132,8 @@ Project provides interface to Auger Project.
   and Model deploy and predict need cluster to perform operations and will
   start cluster automatically. Cluster will stop automatically after some
   inactivity period. To stop it explicitly, use Project stop() method.
+  Throws exception if can't validate credentials, such project doesn't exist,
+  or network connection error.
 
   Example:
   ```
@@ -138,7 +141,9 @@ Project provides interface to Auger Project.
   Project(ctx, project_name).stop()
   ```
 
-- **properties()** - returns dictionary with object properties.
+- **properties()** - returns dictionary with Project properties. Throws exception
+  if can't validate credentials, such Project doesn't exist, or network connection
+  error.
 
   Example:
   ```
@@ -148,6 +153,66 @@ Project provides interface to Auger Project.
 
 
 ### auger.api.DataSet
+DataSet for training on Auger Cloud.
+
+- **DataSet(context, project, dataset_name)** - constructs DataSet instance.
+  - context - instance of auger.api.Context.
+  - project - instance of auger.api.Project pointing to existing remote project.
+  - dataset_name - name of the existing or new DataSet, optional.
+
+- **list()** - lists all DataSets(s) for the Project. Returns iterator where
+  each item is dictionary with DataSet properties. Throws exception if can't
+  validate credentials, parent project doesn't exist, or network connection error.
+
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  for dataset in iter(DataSet(ctx, project).list()):
+      ctx.log(dataset.get('name'))
+  ```
+
+- **create(source)** - creates new DataSet on Auger Cloud from the local or
+  remote data file. If `dataset_name` is not set, name will be selected
+  automatically. Throws exception if can't validate credentials, parent project
+  doesn't exist, DataSet with specified name already exists, or network
+  connection error.
+
+  - source - path to local or link to remote .csv or .arff file
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project).create('../iris.csv')
+  ctx.log('Created dataset %s' % dataset.name)
+  ```
+
+- **delete()** - deletes DataSet on Auger Cloud. Throws exception if can't
+  validate credentials, parent project doesn't exist, DataSet with specified
+  name doesn't exist, or network connection error.       
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  DataSet(ctx, project, dataset_name).delete()
+  ctx.log('Deleted dataset %s' % dataset_name)
+  ```
+
+- **properties()** - returns dictionary with DataSet properties. Throws exception
+  if can't validate credentials, such DataSet doesn't exist, or network connection
+  error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  properties = DataSet(ctx, dataset_name).properties()
+  ```
+
+
 ### auger.api.Experiment
 ### auger.api.Model
 
