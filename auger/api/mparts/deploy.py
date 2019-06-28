@@ -17,9 +17,9 @@ class ModelDeploy(object):
 
     def execute(self, model_id, locally=False):
         if locally:
-            self.depoly_model_locally(model_id)
+            return self.depoly_model_locally(model_id)
         else:
-            self.deploy_model_in_cloud(model_id)
+            return self.deploy_model_in_cloud(model_id)
 
     def deploy_model_in_cloud(self, model_id):
         self.ctx.log('Deploying model %s' % model_id)
@@ -31,6 +31,8 @@ class ModelDeploy(object):
 
         self.ctx.log('Deployed Model on Auger Cloud. Model id is %s' % \
             pipeline_properties.get('id'))
+
+        return pipeline_properties.get('id')
 
     def depoly_model_locally(self, model_id):
         is_loaded, model_path, model_name = self.verify_local_model(model_id)
@@ -52,6 +54,8 @@ class ModelDeploy(object):
 
         self.ctx.log('Pulling docker image required to predict')
         self._docker_pull_image()
+
+        return model_id
 
     @staticmethod
     def verify_local_model(model_id):
