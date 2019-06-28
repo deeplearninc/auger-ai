@@ -34,6 +34,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
   - delete - deletes DataSet on Auger Cloud and clears DataSet name from auger.yaml
 
 - experiment
+  - list - list all Experiment(s) for the DataSet
   - start - starts Experiment with selected DataSet; Experiment settings configured in auger.yaml
   - stop - stops running experiment.
   - leaderboard - shows leaderboard of the currently running or the last completed experiment.
@@ -151,7 +152,6 @@ Project provides interface to Auger Project.
   properties = Project(ctx, project_name).properties()
   ```
 
-
 ### auger.api.DataSet
 DataSet for training on Auger Cloud.
 
@@ -170,7 +170,7 @@ DataSet for training on Auger Cloud.
   ctx = Context()
   project = Project(ctx, project_name)
   for dataset in iter(DataSet(ctx, project).list()):
-      ctx.log(dataset.get('name'))
+    ctx.log(dataset.get('name'))
   ```
 
 - **create(source)** - creates new DataSet on Auger Cloud from the local or
@@ -180,6 +180,9 @@ DataSet for training on Auger Cloud.
   connection error.
 
   - source - path to local or link to remote .csv or .arff file
+
+  If Project cluster is not running, it will be started automatically to
+  parse and preprocess DataSet.
 
   Example:
   ```
@@ -209,11 +212,157 @@ DataSet for training on Auger Cloud.
   ```
   ctx = Context()
   project = Project(ctx, project_name)
-  properties = DataSet(ctx, dataset_name).properties()
+  properties = DataSet(ctx, project, dataset_name).properties()
   ```
 
-
 ### auger.api.Experiment
+
+- **Experiment(context, dataset, experiment_name)** - constructs Experiment instance.
+  - context - instance of auger.api.Context.
+  - project - instance of auger.api.DataSet pointing to existing remote DataSet
+    which will be used to search for the best Model.
+  - experiment_name - name of the existing or new Experiment, optional.
+
+- **list()** - list all Experiment(s) for the DataSet. Returns iterator where
+  each item is dictionary with Experiment properties. Throws exception if can't
+  validate credentials, parent DataSet doesn't exist, or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  for exp in iter(Experiment(ctx, dataset).list()):
+    ctx.log(exp.get('name'))
+  ```
+
+- **start()** - starts Experiment with selected DataSet; Experiment settings
+  configured in auger.yaml. If `experiment_name` is not set in constructor,
+  unique name for the Experiment will be created automatically. Throws exception
+  if can't validate credentials, parent DataSet doesn't exist, experiment with
+  such name already exists, or network connection error.
+
+  If Project cluster is not running, it will be started automatically to process
+  search for the best Model.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  eperiment_name, session_id = Experiment(ctx, dataset).start()
+  ```
+
+  Example of the Experiment settings in auget.yaml:
+  ```
+  # List of columns to be excluded from the training data
+  exclude:
+
+  experiment:
+    # Time series feature. If Data Source contains more then one DATETIME feature
+    # you will have to explicitly specify feature to use as time series
+    time_series:
+    # List of columns which should be used as label encoded features
+    label_encoded: []
+    # Number of folds used for k-folds validation of individual trial
+    cross_validation_folds: 5
+    # Maximum time to run experiment in minutes
+    max_total_time: 60
+    # Maximum time to run individual trial in minutes
+    max_eval_time: 1
+    # Maximum trials to run to complete experiment
+    max_n_trials: 10
+    # Try to improve model performance by creating ensembles from the trial models
+    use_ensemble: true
+    ### Metric used to build Model
+    # Score used to optimize ML model.
+    # Supported scores for classification: accuracy, f1_macro, f1_micro, f1_weighted, neg_log_loss, precision_macro, precision_micro, precision_weighted, recall_macro, recall_micro, recall_weighted
+    # Supported scores for binary classification: accuracy, average_precision, f1, f1_macro, f1_micro, f1_weighted, neg_log_loss, precision, precision_macro, precision_micro, precision_weighted, recall, recall_macro, recall_micro, recall_weighted, roc_auc, cohen_kappa_score, matthews_corrcoef
+    # Supported scores for regression and time series: explained_variance, neg_median_absolute_error, neg_mean_absolute_error, neg_mean_squared_error, neg_mean_squared_log_error, r2, neg_rmsle, neg_mase, mda, neg_rmse
+    metric: f1_macro
+  ```
+
+- **stop()** - stops running Experiment. Returns True is Experiment was running
+  and stopped now, False is Experiment wasn't running and stop command was ignored.
+  Throws exception if can't validate credentials, parent DataSet doesn't exist,
+  Experiment with such name doesn't exist, or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  if Experiment(self.ctx, dataset, experiment_name).stop():
+      ctx.log('Search is stopped...')
+  else:
+      ctx.log('Search is not running. Stop is ignored.')
+  ```
+
+- **leaderboard(run_id)** - leaderboard of the currently running or
+  previously completed experiment(s). If `run_id` is not specified, method
+  returns currently running or last completed experiment leaderboard; otherwise
+  returns leaderboard for the run with specified id. Returns None if leaderboard
+  wasn't found.
+
+  In addition, returns status of the Experiment run:  
+  - preprocess - Search is preprocessing data for traing;
+  - started - Search is in progress;
+  - completed - Search is completed;
+  - interrupted - Search was interrupted.
+
+  Throws exception if can't validate credentials, parent DataSet doesn't exist,
+  Experiment with such name doesn't exist, or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  # latest experiment leaderboard and latest experiment status
+  leaderboard, status = Experiment(ctx, dataset, experiment_name).leaderboard()
+  ```
+
+- **history()** - history (leaderboards and settings) of the previous
+  experiment runs. Returns iterator where each item is dictionary with properties
+  of the previous Experiment runs.
+  Throws exception if can't validate credentials, parent DataSet doesn't exist,
+  Experiment with such name doesn't exist, or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  for run in iter(Experiment(self.ctx, dataset, experiment_name).history()):
+      ctx.log("run id: {}, start tiem: {}, status: {}".format(
+        run.get('id'),
+        run.get('model_settings').get('start_time'),
+        run.get('status')))
+  ```
+
+- **properties()** - returns dictionary with Experiment properties. Throws exception
+  if can't validate credentials, such Experiment doesn't exist, or network connection
+  error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  properties = Experiment(self.ctx, dataset, experiment_name).properties()
+  ```
+
+- **delete()** - deletes Experiment. Throws exception if can't validate
+  credentials, such Experiment doesn't exist, or network connection error.
+
+  Example:
+  ```
+  ctx = Context()
+  project = Project(ctx, project_name)
+  dataset = DataSet(ctx, project, dataset_name)
+  Experiment(self.ctx, dataset, experiment_name).delete()
+  ```
+
 ### auger.api.Model
 
 
