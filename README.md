@@ -47,7 +47,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
 
 # Auger.ai API
 ## Base Classes
-  - auger.api.Context
+### auger.api.Context
   Context provides environment to run Auger Experiments and Models:
     - loads Auger credentials and initializes Auger REST API to communicate
     with remote Auger Cloud;
@@ -65,14 +65,14 @@ auger.yaml provides local context for the Project and keeps settings for Experim
       path_to_credentials key in auger.yaml
     - if none above, form $HOME/.augerai/auger.json
 
-  - auger.api.Project
+### auger.api.Project
     Project provides interface to Auger Project.
 
-    - Project(context, project_name)
+    - **Project(context, project_name)**
       - context - instance of auger.api.Context
       - project_name - name of the existing or new Project, optional.
 
-    - list() - lists all Projects in your Organization. Returns iterator where
+    - **list()** - lists all Projects in your Organization. Returns iterator where
       each item is dictionary with Project properties
 
       Example:
@@ -82,7 +82,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
         self.ctx.log(project.get('name'))
       ```
 
-    - create() - creates Project on Auger Cloud. Throws exception if can't
+    - **create()** - creates Project on Auger Cloud. Throws exception if can't
       validate credentials, Project with such name already exists, or network
       connection error.
 
@@ -92,7 +92,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
       project = Project(ctx, new_project_name).create()
       ```
 
-    - delete() - deletes Project on Auger Cloud. Throws exception if can't
+    - **delete()** - deletes Project on Auger Cloud. Throws exception if can't
       validate credentials, Project with such name doesn't exists, or network
       connection error.
 
@@ -102,7 +102,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
       Project(ctx, existing_project_name).delete()
       ```
 
-    - start() - starts Project cluster. DataSet processing, Experiment runs
+    - **start()** - starts Project cluster. DataSet processing, Experiment runs
       and Model deploy and predict need cluster to perform operations and will
       start cluster automatically. It is possible, but not necessary, to start
       cluster beforehand. Throws exception if can't validate credentials or
@@ -127,7 +127,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
       Project(ctx, project_name).start()
       ```
 
-    - stop() - stops Project cluster. DataSet processing, Experiment runs
+    - **stop()** - stops Project cluster. DataSet processing, Experiment runs
       and Model deploy and predict need cluster to perform operations and will
       start cluster automatically. Cluster will stop automatically after some
       inactivity period. To stop it explicitly, use Project stop() method.
@@ -138,7 +138,7 @@ auger.yaml provides local context for the Project and keeps settings for Experim
       Project(ctx, project_name).stop()
       ```
 
-    - properties() - returns dictionary with object properties.
+    - **properties()** - returns dictionary with object properties.
 
       Example:
       ```
@@ -147,9 +147,9 @@ auger.yaml provides local context for the Project and keeps settings for Experim
       ```
 
 
-  - auger.api.DataSet
-  - auger.api.Experiment
-  - auger.api.Model
+### auger.api.DataSet
+### auger.api.Experiment
+### auger.api.Model
 
 
 ## Development Setup
