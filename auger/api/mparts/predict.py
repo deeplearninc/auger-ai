@@ -49,7 +49,7 @@ class ModelPredict():
             raise AugerException('Model isn\'t loaded locally. '
                 'Please use augerai depoly command to download model.')
 
-        model_path, model_existed = self._exstract_model(model_name)
+        model_path, model_existed = self._extract_model(model_name)
 
         try:
             predicted = \
@@ -62,7 +62,7 @@ class ModelPredict():
 
         return predicted
 
-    def _exstract_model(self, model_name):
+    def _extract_model(self, model_name):
         model_path = os.path.splitext(model_name)[0]
         model_existed = os.path.exists(model_path)
 
