@@ -50,7 +50,8 @@ def authenticated(monkeypatch, isolated):
 
 @pytest.fixture(autouse=True)
 def no_requests(monkeypatch):
-    def call_ex(*args, **kwargs):
-        print("CALLED call_ex(", args, kwargs, ")")
+    def request(*args, **kwargs):
+        print("CALLED HubApiClient.request(", args, kwargs, ")")
+        raise Exception("No way further")
         return {}
-    monkeypatch.setattr(RestApi, "call_ex", call_ex)
+    monkeypatch.setattr('auger.hub_api_client.HubApiClient.request', request)
