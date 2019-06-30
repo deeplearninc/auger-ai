@@ -1,7 +1,10 @@
 from functools import wraps
+import sys
+
 from auger.api.project import Project
 from auger.api.dataset import DataSet
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from auger.api.cloud.utils.exception import (
+    AugerException, NotAuthenticatedException)
 
 
 def error_handler(decorated):
@@ -13,12 +16,18 @@ def error_handler(decorated):
                 import traceback
                 traceback.print_exc()
             self.ctx.log(str(exc))
+            sys.exit(1)
     return wrapper
+
 
 def authenticated(decorated):
     def wrapper(self, *args, **kwargs):
         # verify avalability of auger credentials
-        self.ctx.credentials.verify()
+        try:
+            self.ctx.credentials.verify()
+        except NotAuthenticatedException as e:
+            self.ctx.log(str(e))    
+            sys.exit(1)
         return decorated(self, *args, **kwargs)
     return wrapper
 
@@ -50,7 +59,7 @@ def with_project(autocreate=False):
 
 def with_dataset(decorated):
     def wrapper(self, *args, **kwargs):
-        project = _get_project(self)
+        project = _get_project(self, False)
         data_set_name = self.ctx.get_config('auger').get('dataset', None)
         if data_set_name is None:
             raise AugerException(

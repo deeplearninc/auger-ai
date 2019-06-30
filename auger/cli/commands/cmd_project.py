@@ -3,7 +3,7 @@ import click
 from auger.api.project import Project
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from auger.api.cloud.utils.exception import AugerException
 from auger.cli.utils.decorators import error_handler, authenticated
 
 
@@ -116,6 +116,7 @@ def delete(ctx, name):
     """Delete Project"""
     ProjectCmd(ctx).delete(name)
 
+
 @click.command(short_help='Start Project')
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
@@ -125,6 +126,7 @@ def start(ctx, name):
     """
     ProjectCmd(ctx).start(name)
 
+
 @click.command(short_help='Stop Project')
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
@@ -133,6 +135,7 @@ def stop(ctx, name):
        If name is not specified will stop Project set in auger.yaml/project
     """
     ProjectCmd(ctx).stop(name)
+
 
 @click.command(short_help='Select Project')
 @click.argument('name', required=True, type=click.STRING)
@@ -152,5 +155,6 @@ def add_commands(ctx):
     command.add_command(select)
     command.add_command(start)
     command.add_command(stop)
+
 
 add_commands()

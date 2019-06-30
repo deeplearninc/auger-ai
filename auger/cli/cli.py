@@ -1,5 +1,4 @@
 import os
-import sys
 
 import click
 
@@ -8,8 +7,7 @@ from .utils.context import CONTEXT_SETTINGS, pass_context
 
 class AugerCLI(click.MultiCommand):
     cmd_folder = os.path.abspath(
-        os.path.join(os.path.dirname(__file__),
-        'commands'))
+        os.path.join(os.path.dirname(__file__), 'commands'))
 
     def list_commands(self, ctx):
         command_list = []
@@ -22,13 +20,10 @@ class AugerCLI(click.MultiCommand):
 
     def get_command(self, ctx, name):
         try:
-            if sys.version_info[0] == 2:
-                name = name.encode('ascii', 'replace')
             mod = __import__('auger.cli.commands.cmd_' + name,
                              fromlist=[''])
-        except ImportError as e:
-            import traceback
-            traceback.print_exc()
+        except ImportError:
+            # import traceback; traceback.print_exc();
             return
         return mod.command
 

@@ -1,10 +1,10 @@
 import os
 import subprocess
 
-from a2ml.api.auger.cloud.cluster import AugerClusterApi
-from a2ml.api.auger.cloud.pipeline import AugerPipelineApi
-from a2ml.api.auger.cloud.utils.exception import AugerException
-from a2ml.api.auger.cloud.pipeline_file import AugerPipelineFileApi
+from ..cloud.cluster import AugerClusterApi
+from ..cloud.pipeline import AugerPipelineApi
+from ..cloud.utils.exception import AugerException
+from ..cloud.pipeline_file import AugerPipelineFileApi
 
 
 class ModelDeploy(object):

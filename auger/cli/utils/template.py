@@ -1,6 +1,7 @@
 import os
 import shutil
 
+
 class Template(object):
 
     @staticmethod

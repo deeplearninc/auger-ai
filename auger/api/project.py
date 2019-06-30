@@ -1,6 +1,6 @@
-from a2ml.api.auger.cloud.project import AugerProjectApi
-from a2ml.api.auger.cloud.org import AugerOrganizationApi
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from .cloud.project import AugerProjectApi
+from .cloud.org import AugerOrganizationApi
+from .cloud.utils.exception import AugerException
 
 
 class Project(AugerProjectApi):

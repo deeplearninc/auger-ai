@@ -1,15 +1,13 @@
-import os
 import click
-import urllib.parse
 
-from auger.api.dataset import DataSet
 from auger.api.experiment import Experiment
 from auger.cli.utils.config import AugerConfig
 from auger.cli.utils.context import pass_context
 from auger.cli.utils.formatter import print_table
 from auger.cli.utils.decorators import \
-    error_handler, authenticated, with_project, with_dataset
-from a2ml.api.auger.cloud.utils.exception import AugerException
+    error_handler, authenticated, with_dataset
+from auger.api.cloud.utils.exception import AugerException
+
 
 
 class ExperimentCmd(object):
@@ -81,7 +79,7 @@ class ExperimentCmd(object):
         if name is None:
             raise AugerException('Please specify Experiment name...')
         for exp_run in iter(Experiment(self.ctx, dataset, name).history()):
-            self.ctx.log("run id: {}, start tiem: {}, status: {}".format(
+            self.ctx.log("run id: {}, start time: {}, status: {}".format(
                 exp_run.get('id'),
                 exp_run.get('model_settings').get('start_time'),
                 exp_run.get('status')))
@@ -93,11 +91,13 @@ def command(ctx):
     """Auger experiment management"""
     ctx.setup_logger(format='')
 
+
 @click.command(short_help='List Experiments for selected DataSet')
 @pass_context
 def list_cmd(ctx):
     """List Experiments for selected DataSet"""
     ExperimentCmd(ctx).list()
+
 
 @click.command(short_help='Start Experiment')
 @pass_context
@@ -107,11 +107,13 @@ def start(ctx):
     """
     ExperimentCmd(ctx).start()
 
+
 @click.command(short_help='Stop Experiment')
 @pass_context
 def stop(ctx):
     """Stop Experiment"""
     ExperimentCmd(ctx).stop()
+
 
 @click.command(short_help='Show Experiment leaderboard')
 @click.argument('run-id', required=False, type=click.STRING)
@@ -137,5 +139,6 @@ def add_commands(ctx):
     command.add_command(stop)
     command.add_command(leaderboard)
     command.add_command(history)
+
 
 add_commands()

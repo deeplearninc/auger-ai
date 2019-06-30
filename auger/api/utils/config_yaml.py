@@ -19,14 +19,14 @@ class ConfigYaml(Namespace):
             self.load_to_namespace(
                 self, ruamel.yaml.load(f, Loader=ruamel.yaml.Loader))
         with open(filename, 'r') as f:
-            self.yaml = ruamel.yaml.load(f,
-                Loader=ruamel.yaml.RoundTripLoader)
+            self.yaml = ruamel.yaml.load(
+                f, Loader=ruamel.yaml.RoundTripLoader)
 
     def write(self, filename=None):
         filename = filename if filename else self.filename
         with open(self.filename, 'w') as out:
-            out.write(ruamel.yaml.dump(self.yaml,
-                Dumper=ruamel.yaml.RoundTripDumper))
+            out.write(ruamel.yaml.dump(
+                self.yaml, Dumper=ruamel.yaml.RoundTripDumper))
 
     def merge_namespace(self, namespace):
         for name in vars(namespace):
@@ -62,6 +62,6 @@ class ConfigYaml(Namespace):
 
     @staticmethod
     def _clean_name(s):
-        s = re.sub('\W|^(?=\d)', '_', s)
-        s = re.sub('^[^A-Za-z]*', '', s)
+        s = re.sub(r'\W|^(?=\d)', '_', s)
+        s = re.sub(r'^[^A-Za-z]*', '', s)
         return s

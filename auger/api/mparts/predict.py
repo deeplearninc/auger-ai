@@ -4,10 +4,11 @@ import subprocess
 from zipfile import ZipFile
 
 from auger.api.mparts.deploy import ModelDeploy
-from a2ml.api.auger.cloud.cluster import AugerClusterApi
-from a2ml.api.auger.cloud.pipeline import AugerPipelineApi
-from a2ml.api.auger.cloud.utils.dataframe import DataFrame
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from ..cloud.cluster import AugerClusterApi
+from ..cloud.pipeline import AugerPipelineApi
+from ..cloud.utils.dataframe import DataFrame
+from ..cloud.utils.exception import AugerException
+
 
 class ModelPredict():
     """Predict using deployed Auger Model."""
@@ -46,7 +47,7 @@ class ModelPredict():
 
         if not is_model_loaded:
             raise AugerException('Model isn\'t loaded locally. '
-                'Please use a2ml depoly command to download model.')
+                'Please use augerai depoly command to download model.')
 
         model_path, model_existed = self._exstract_model(model_name)
 

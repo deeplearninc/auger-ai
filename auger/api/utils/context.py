@@ -3,7 +3,7 @@ import sys
 import logging
 
 from auger.api.credentials import Credentials
-from a2ml.api.auger.cloud.rest_api import RestApi
+from auger.api.cloud.rest_api import RestApi
 from auger.api.utils.config_yaml import ConfigYaml
 
 log = logging.getLogger("auger")

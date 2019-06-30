@@ -7,3 +7,6 @@ class TestDataSetAPI():
 
     def test_delete(self):
         assert False
+
+    def test_select(self):
+        assert False

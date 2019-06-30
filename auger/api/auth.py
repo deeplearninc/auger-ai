@@ -1,8 +1,8 @@
 import sys
 
 from auger.api.credentials import Credentials
-from a2ml.api.auger.cloud.auth import AugerAuthApi
-from a2ml.api.auger.cloud.utils.exception import AugerException
+from .cloud.auth import AugerAuthApi
+from .cloud.utils.exception import AugerException
 
 
 class AugerAuth(object):
@@ -38,18 +38,21 @@ class AugerAuth(object):
             self.ctx.log(exc_text)
 
     def logout(self):
+
         if self.credentials.token is None:
-            self.ctx.log('You are not loged in Auger.')
+            self.ctx.log('You are not logged in Auger.')
+            sys.exit(1)
         else:
             self.credentials.token = None
             self.credentials.api_url = None
             self.credentials.organisation = None
             self.credentials.save()
-            self.ctx.log('You are loged out of Auger.')
+            self.ctx.log('You are logged out of Auger.')
 
     def whoami(self):
         if self.credentials.token is None:
             self.ctx.log('Please login to Auger...')
+            sys.exit(1)
         else:
             self.ctx.log(
                 '%s %s %s' % (

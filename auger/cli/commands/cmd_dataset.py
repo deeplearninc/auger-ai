@@ -40,6 +40,7 @@ class DataSetCmd(object):
             AugerConfig(self.ctx).set_data_set(None).set_experiment(None)
         self.ctx.log('Deleted dataset %s' % name)
 
+    @error_handler
     def select(self, name):
         old_name = self.ctx.get_config('auger').get('dataset', None)
         if name != old_name:
@@ -53,11 +54,13 @@ def command(ctx):
     """Auger Cloud data sets management"""
     ctx.setup_logger(format='')
 
+
 @click.command(short_help='List data sets on Auger Cloud')
 @pass_context
 def list_cmd(ctx):
     """List Auger remote datasets"""
     DataSetCmd(ctx).list()
+
 
 @click.command(short_help='Create data set on the Auger Cloud')
 @click.argument('source', required=False, type=click.STRING)
@@ -69,6 +72,7 @@ def create(ctx, source):
     """
     DataSetCmd(ctx).create(source)
 
+
 @click.command(short_help='Delete data set on the Auger Cloud')
 @click.argument('name', required=False, type=click.STRING)
 @pass_context
@@ -78,6 +82,7 @@ def delete(ctx, name):
        will be used instead.
     """
     DataSetCmd(ctx).delete(name)
+
 
 @click.command(short_help='Select data set')
 @click.argument('name', required=True, type=click.STRING)
@@ -95,5 +100,6 @@ def add_commands(ctx):
     command.add_command(create)
     command.add_command(delete)
     command.add_command(select)
+
 
 add_commands()
