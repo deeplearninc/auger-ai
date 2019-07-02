@@ -34,12 +34,21 @@ class TestLogin():
             'username', 'password', 'test_org_name', 'localhost')
         assert token == 'fake_token'
 
+    def test_incorrect(self, monkeypatch):
+        def mock(*args, **kwargs):
+            raise AugerException('Email or password incorrect')
+        monkeypatch.setattr('auger.api.cloud.rest_api.RestApi.call_ex', mock)
+        with pytest.raises(AugerException) as excinfo:
+            token = self.auth_api.login(
+                'username', 'wrong_pass', 'test_org_name', 'localhost')
+        assert "Email or password incorrect" in str(excinfo.value)
+
     def test_organisation_doesnt_exist(self, monkeypatch):
         PAYLOAD = {
             'create_token': {
                 'data': {
                     'token': 'fake_token',
-                    'confirmation_required': False} 
+                    'confirmation_required': False}
             },
             'get_organizations': {
                 'meta': {
@@ -53,5 +62,5 @@ class TestLogin():
         with pytest.raises(AugerException) as excinfo:
             token = self.auth_api.login(
                 'username', 'password', 'non_existing_org', 'localhost')
-        assert (str(excinfo.value) == 
+        assert (str(excinfo.value) ==
             "Auger Organization non_existing_org doesn't exist")

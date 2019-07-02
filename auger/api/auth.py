@@ -32,10 +32,7 @@ class AugerAuth(object):
                 'You are now logged in on %s as %s.' % (url, username))
 
         except Exception as exc:
-            exc_text = str(exc)
-            if 'Email or password incorrect' in exc_text:
-                exc_text = 'Email or password incorrect...'
-            self.ctx.log(exc_text)
+            self.ctx.log(str(exc))
 
     def logout(self):
 
