@@ -11,8 +11,14 @@ class AugerAuthApi(object):
 
     def login(self, username, password, organisation, url):
         rest_api = RestApi(url, None)
-        res = rest_api.call_ex(
-            'create_token', {'email': username, 'password': password})
+        try:
+            res = rest_api.call_ex(
+                'create_token', {'email': username, 'password': password})
+        except Exception as e:
+            if 'Email or password incorrect' in str(e):
+                raise AugerException('Email or password incorrect...')
+            else:
+                raise e
         self.ctx.rest_api = RestApi(url, res['data']['token'])
         org_api = AugerOrganizationApi(self.ctx, organisation)
         if org_api.properties() == None:
