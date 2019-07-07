@@ -1,4 +1,4 @@
-# Aurer.ai
+# Auger.ai
 Auger Cloud python and command line interface
 
 
