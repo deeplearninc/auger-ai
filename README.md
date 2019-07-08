@@ -1,3 +1,6 @@
+# Install
+TODO: add install commands
+
 # Auger.ai
 Auger Cloud python and command line interface
 
