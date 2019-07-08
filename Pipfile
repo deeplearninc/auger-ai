@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+flake8 = "*"
+mock = "*"
+
+[packages]
+auger-ai = {editable = true,path = "."}
+auger-hub-api-client = ">=0.5.6"
+click = "*"
+requests = "*"
+shortuuid = "*"
+"ruamel.yaml" = "*"
+
+[requires]
+python_version = "3.7"
