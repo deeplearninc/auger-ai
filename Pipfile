@@ -17,6 +17,3 @@ click = "*"
 requests = "*"
 shortuuid = "*"
 "ruamel.yaml" = "*"
-
-[requires]
-python_version = "3.7"
