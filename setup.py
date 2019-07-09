@@ -78,7 +78,10 @@ setup(
     cmdclass={
         'verify': VerifyVersionCommand
     },
-    packages=find_namespace_packages(include='auger.*'),
+    packages=find_namespace_packages(
+        include='auger.*',
+        exclude=['tests.*','tests']
+    ),
     package_data={
         'auger.cli': ['template/*']
     },
