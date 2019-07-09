@@ -30,6 +30,8 @@ install_requires = [
     'shortuuid',
     'auger-hub-api-client>=0.5.6',
     'ruamel.yaml',
+    'pandas==0.23.4',
+    'sklearn-pandas==1.7.0',
 ]
 
 extras = {
@@ -69,6 +71,8 @@ setup(
         "Programming Language :: Python :: 3 :: Only"
     ],
     install_requires=install_requires,
+    setup_requires=['pytest-runner'],
+    tests_require = extras['testing'],
     extras_require=extras,
     entry_points={
         'console_scripts': [
@@ -79,7 +83,7 @@ setup(
         'verify': VerifyVersionCommand
     },
     packages=find_namespace_packages(
-        include='auger.*',
+        include=['auger.*'],
         exclude=['tests.*','tests']
     ),
     package_data={
