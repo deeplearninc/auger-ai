@@ -11,7 +11,7 @@ from auger.api.cloud.rest_api import RestApi
 
 TEST_CREDENTIALS = {
     'username': 'test_user',
-    'organisation': 'auger',
+    'organization': 'auger',
     'url': 'https://example.com',
     'token': 'fake_token',
 }

@@ -11,7 +11,7 @@ class AugerAuth(object):
         self.ctx = ctx
         self.credentials = ctx.credentials
 
-    def login(self, username, password, organisation, url=None):
+    def login(self, username, password, organization, url=None):
         try:
             self.credentials.token = None
             self.credentials.save()
@@ -20,12 +20,12 @@ class AugerAuth(object):
                 url = self.credentials.api_url
 
             token = AugerAuthApi(self.ctx).login(
-                username, password, organisation, url)
+                username, password, organization, url)
 
             self.credentials.token = token
             self.credentials.username = username
             self.credentials.api_url = url
-            self.credentials.organisation = organisation
+            self.credentials.organization = organization
             self.credentials.save()
 
             self.ctx.log(
@@ -42,7 +42,7 @@ class AugerAuth(object):
         else:
             self.credentials.token = None
             self.credentials.api_url = None
-            self.credentials.organisation = None
+            self.credentials.organization = None
             self.credentials.save()
             self.ctx.log('You are logged out of Auger.')
 
@@ -54,5 +54,5 @@ class AugerAuth(object):
             self.ctx.log(
                 '%s %s %s' % (
                     self.credentials.username,
-                    self.credentials.organisation,
+                    self.credentials.organization,
                     self.credentials.api_url))

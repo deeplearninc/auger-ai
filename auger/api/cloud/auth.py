@@ -9,7 +9,7 @@ class AugerAuthApi(object):
         super(AugerAuthApi, self).__init__()
         self.ctx = ctx
 
-    def login(self, username, password, organisation, url):
+    def login(self, username, password, organization, url):
         rest_api = RestApi(url, None)
         try:
             res = rest_api.call_ex(
@@ -20,8 +20,8 @@ class AugerAuthApi(object):
             else:
                 raise e
         self.ctx.rest_api = RestApi(url, res['data']['token'])
-        org_api = AugerOrganizationApi(self.ctx, organisation)
+        org_api = AugerOrganizationApi(self.ctx, organization)
         if org_api.properties() == None:
             raise AugerException(
-                'Auger Organization %s doesn\'t exist' % organisation)
+                'Auger Organization %s doesn\'t exist' % organization)
         return res['data']['token']
