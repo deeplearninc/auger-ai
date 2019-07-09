@@ -93,7 +93,8 @@ class ModelPredict():
             self.ctx.log(
                 'Running model in deeplearninc/'
                 'auger-ml-worker:%s' % docker_tag)
-            subprocess.check_output(
+            getattr(subprocess,
+                'check_call' if self.ctx.debug else 'check_output')(       
                 command, stderr=subprocess.STDOUT, shell=True)
         except subprocess.CalledProcessError as e:
             raise AugerException('Error running Docker container...')

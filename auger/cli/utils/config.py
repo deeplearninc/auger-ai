@@ -5,40 +5,46 @@ class AugerConfig(object):
         super().__init__()
         self.ctx = ctx
 
-    def _with_auger_yaml(decorated):
+    def _with_config_yaml(decorated):
         def wrapper(self, *args, **kwargs) :
             auger_config = self.ctx.get_config('auger')
-            decorated(self, auger_config.yaml, *args, **kwargs)
+            general_config = self.ctx.get_config('config')
+            decorated(
+                self, auger_config.yaml, general_config.yaml, *args, **kwargs)
             auger_config.write()
+            if auger_config != general_config:
+                general_config.write()
             return self
         return wrapper
 
-    @_with_auger_yaml
-    def config(self, yaml, *args, **kwargs):
-        yaml['project'] = kwargs.get('project_name', '')
+    @_with_config_yaml
+    def config(self, auger_yaml, config_yaml, *args, **kwargs):
+        auger_yaml['project'] = kwargs.get('project_name', '')
 
-        yaml['source'] = kwargs.get('source', '')
-        yaml['dataset'] = kwargs.get('data_set_name', '')
-        yaml['target'] = kwargs.get('target', '')
+        config_yaml['source'] = kwargs.get('source', '')
+        auger_yaml['dataset'] = kwargs.get('data_set_name', '')
+        config_yaml['target'] = kwargs.get('target', '')
 
-        yaml['experiment']['name'] = kwargs.get('experiment_name', '')
+        auger_yaml['experiment']['name'] = kwargs.get('experiment_name', '')
         model_type = kwargs.get('model_type', None)
         if model_type:
-            yaml['experiment']['metric'] = \
+            auger_yaml['experiment']['metric'] = \
                 'f1_macro' if model_type == 'classification' else 'r2'
-        yaml['model_type'] = model_type or ''
+        config_yaml['model_type'] = model_type or ''
 
-    @_with_auger_yaml
-    def set_project(self, yaml, project_name):
-        yaml['project'] = project_name
+    @_with_config_yaml
+    def set_project(self, auger_yaml, config_yaml, project_name):
+        auger_yaml['project'] = project_name
 
-    @_with_auger_yaml
-    def set_data_set(self, yaml, data_set_name, data_set_source=None):
-        yaml['dataset'] = data_set_name
+    @_with_config_yaml
+    def set_data_set(
+        self, auger_yaml, config_yaml, data_set_name, data_set_source=None):
+        auger_yaml['dataset'] = data_set_name
         if data_set_source:
-            yaml['source'] = data_set_source
+            config_yaml['source'] = data_set_source
 
-    @_with_auger_yaml
-    def set_experiment(self, yaml, experiment_name, session_id=None):
-        yaml['experiment']['name'] = experiment_name
-        yaml['experiment']['experiment_session_id'] = session_id
+    @_with_config_yaml
+    def set_experiment(
+        self, auger_yaml, config_yaml, experiment_name, session_id=None):
+        auger_yaml['experiment']['name'] = experiment_name
+        auger_yaml['experiment']['experiment_session_id'] = session_id

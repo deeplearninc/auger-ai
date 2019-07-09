@@ -25,6 +25,8 @@ class DataSetCmd(object):
     @authenticated
     @with_project(autocreate=True)
     def create(self, project, source):
+        if source is None:
+            source = self.ctx.get_config('config').get('source', None)
         dataset = DataSet(self.ctx, project).create(source)
         AugerConfig(self.ctx).set_data_set(dataset.name, source)
         self.ctx.log('Created DataSet %s' % dataset.name)
@@ -67,7 +69,7 @@ def list_cmd(ctx):
 @pass_context
 def create(ctx, source):
     """Create data set on the Auger Cloud.
-       If source is not specified, auger.yaml/dataset/source
+       If source is not specified, auger.yaml/source
        will be used instead.
     """
     DataSetCmd(ctx).create(source)
@@ -78,18 +80,18 @@ def create(ctx, source):
 @pass_context
 def delete(ctx, name):
     """Delete data set on the Auger Cloud
-       If name is not specified, auger.yaml/dataset/name
+       If name is not specified, auger.yaml/dataset
        will be used instead.
     """
     DataSetCmd(ctx).delete(name)
 
 
-@click.command(short_help='Select data set')
+@click.command(short_help='Select Data Set')
 @click.argument('name', required=True, type=click.STRING)
 @pass_context
 def select(ctx, name):
     """Select data set.
-       Name will be set in auger.yaml/dataset/name
+       Name will be set in auger.yaml/dataset
     """
     DataSetCmd(ctx).select(name)
 
