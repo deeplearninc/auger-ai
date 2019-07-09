@@ -22,20 +22,13 @@ class RestApi(object):
 
     def call_ex(self, method, params={}):
         params = params.copy()
-        import logging
-        log = logging.getLogger('auger')
-        log.info(method, params)
 
         if params.get('id') and not method.startswith('create_'):
             oid = params['id']
             del params['id']
-            result = getattr(self.hub_client, method)(oid, **params)
-            log.info(result)
-            return result
+            return getattr(self.hub_client, method)(oid, **params)
         else:
-            result = getattr(self.hub_client, method)(**params)
-            log.info(result)
-            return result
+            return getattr(self.hub_client, method)(**params)
 
     def call(self, method, params={}):
         result = self.call_ex(method, params)
