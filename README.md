@@ -36,6 +36,8 @@ auger.yaml provides local context for the Project and keeps settings for Experim
   - create - creates new DataSet on Auger Cloud from the local or remote data file;
   name of the DataSet will be stored in auger.yaml;
   all further operations with Experiments and Models will be performed using this DataSet.
+  - download - Downloads source data form Data Set on the Auger Cloud.
+  If Data Set name is not specified on command line, auger.yaml/dataset will be used instead.
   - delete - deletes DataSet on Auger Cloud and clears DataSet name from auger.yaml
 
 - experiment
