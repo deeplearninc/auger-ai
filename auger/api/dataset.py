@@ -1,4 +1,5 @@
 from .cloud.data_set import AugerDataSetApi
+from .cloud.cluster_task import AugerClusterTaskApi
 from .cloud.utils.exception import AugerException
 
 
@@ -22,3 +23,13 @@ class DataSet(AugerDataSetApi):
 
         super().create(data_source_file, self.object_name)
         return self
+
+    def download(self, path_to_download):
+        if path_to_download is None:
+            raise AugerException('Please specify path to download...')
+
+        if not self.project.is_running():
+            self.ctx.log('Starting Project to process request...')
+            self.project.start()
+
+        return super().download(path_to_download)

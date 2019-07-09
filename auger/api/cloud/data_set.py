@@ -1,9 +1,10 @@
 import os
 import time
+import json
 import requests
 import shortuuid
 import urllib.parse
-import xml.etree.ElementTree as ET
+import urllib.request
 
 from .cluster import AugerClusterApi
 from .utils.exception import AugerException
@@ -44,6 +45,31 @@ class AugerDataSetApi(AugerProjectFileApi):
                 raise AugerException(
                     'DataSet already exists for %s' % file_url)
             raise exc
+
+    def download(self, path_to_download):
+        remote_file = self.properties().get('url')
+        unused, ext = os.path.splitext(remote_file)
+        filename, unused = os.path.splitext(self.name)
+        local_file = os.path.abspath(
+            os.path.join(path_to_download, filename+ext))
+
+        cluster_mode = self.parent_api.parent_api.get_cluster_mode()
+        if cluster_mode == 'single_tenant':
+            s3_signed_url = AugerClusterTaskApi(self.ctx, self.project,
+                'pipeline_functions.packager.tasks.generate_presigned_url').\
+                create(json.dumps([remote_file]))
+        else:
+            remote_file = os.path.basename(remote_file)
+            s3_signed_url = self.rest_api.call('get_project_file_url', {
+                'project_id': self.parent_api.oid,
+                'file_path': remote_file}).get('url')
+
+        if not os.path.exists(path_to_download):
+            os.makedirs(path_to_download)
+
+        urllib.request.urlretrieve(s3_signed_url, local_file)
+
+        return local_file
 
     def _get_readable_name(self):
         # patch readable name

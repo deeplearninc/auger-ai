@@ -49,6 +49,15 @@ class DataSetCmd(object):
             AugerConfig(self.ctx).set_data_set(name, '').set_experiment(None)
         self.ctx.log('Selected DataSet %s' % name)
 
+    @error_handler
+    @authenticated
+    @with_project(autocreate=False)
+    def download(self, project, name, path_to_download):
+        if name is None:
+            name = self.ctx.get_config('auger').get('dataset', None)
+        file_name = DataSet(self.ctx, project, name).download(path_to_download)
+        self.ctx.log('Downloaded dataset %s to %s' % (name, file_name))
+
 
 @click.group('dataset', short_help='Auger Cloud dataset(s) management')
 @pass_context
@@ -95,6 +104,18 @@ def select(ctx, name):
     """
     DataSetCmd(ctx).select(name)
 
+@click.command(short_help='Downloads source data form Data Set on the Auger Cloud')
+@click.argument('path_to_download', required=True, type=click.STRING)
+@click.option('--dataset', '-ds', type=click.STRING, required=False,
+    help='Data Set name to download.')
+@pass_context
+def download(ctx, dataset, path_to_download):
+    """Downloads source data form Data Set on the Auger Cloud.
+       If Data Set name is not specified, auger.yaml/dataset
+       will be used instead.
+    """
+    DataSetCmd(ctx).download(dataset, path_to_download)
+
 
 @pass_context
 def add_commands(ctx):
@@ -102,6 +123,7 @@ def add_commands(ctx):
     command.add_command(create)
     command.add_command(delete)
     command.add_command(select)
+    command.add_command(download)
 
 
 add_commands()
