@@ -1,7 +1,7 @@
 import os
 import sys
 import codecs
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 from setuptools.command.install import install
 
 VERSION = '0.1.8'
@@ -78,5 +78,9 @@ setup(
     cmdclass={
         'verify': VerifyVersionCommand
     },
-    packages=['auger.cli', 'auger.api']
+    packages=find_namespace_packages(include='auger.*'),
+    package_data={
+        'auger.cli': ['template/*']
+    },
+    include_package_data=True,
 )
