@@ -43,7 +43,7 @@ class TestLogin():
                 'username', 'wrong_pass', 'test_org_name', 'localhost')
         assert "Email or password incorrect" in str(excinfo.value)
 
-    def test_organisation_doesnt_exist(self, monkeypatch):
+    def test_organization_doesnt_exist(self, monkeypatch):
         PAYLOAD = {
             'create_token': {
                 'data': {

@@ -11,7 +11,7 @@ class Credentials(object):
         self.ctx = ctx
         self.creds_path = self._path_to_credentials()
         self.creds_file = os.path.join(self.creds_path, 'auger.json')
-        self.organisation = None
+        self.organization = None
         self.username = None
         self.api_url = None
         self.token = None
@@ -26,7 +26,7 @@ class Credentials(object):
                 content = json.loads(file.read())
 
         self.username = content.get('username')
-        self.organisation = content.get('organisation')
+        self.organization = content.get('organization')
         self.api_url = content.get('url', 'https://app.auger.ai')
         self.token = content.get('token')
 
@@ -39,7 +39,7 @@ class Credentials(object):
         content['username'] = self.username
         content['url'] = self.api_url
         content['token'] = self.token
-        content['organisation'] = self.organisation
+        content['organization'] = self.organization
 
         with open(self.creds_file, 'w') as file:
             file.write(json.dumps(content))
