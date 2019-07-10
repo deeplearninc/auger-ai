@@ -39,6 +39,7 @@ class TestModelCLI():
         }
         interceptor(PAYLOAD, monkeypatch)
         monkeypatch.setattr('subprocess.check_output', lambda *a, **kw: 0)
+        monkeypatch.setattr('subprocess.check_call', lambda *a, **kw: 0)
         result = runner.invoke(cli, ['model', 'predict', '-m', '87C81FE615DE46D', 'iris.csv', '--locally'])
         assert result.exit_code == 0
         assert log.messages[0] == 'Predicting on data in iris.csv'
