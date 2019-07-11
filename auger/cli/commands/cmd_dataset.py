@@ -16,8 +16,12 @@ class DataSetCmd(object):
     @with_project(autocreate=False)
     def list(self, project):
         count = 0
+        selected = self.ctx.get_config('auger').get('dataset', None)
         for dataset in iter(DataSet(self.ctx, project).list()):
-            self.ctx.log(dataset.get('name'))
+            self.ctx.log(
+                ('[%s] ' % ('x' if selected == dataset.get('name') else ' ')) +
+                dataset.get('name')
+            )
             count += 1
         self.ctx.log('%s DataSet(s) listed' % str(count))
 

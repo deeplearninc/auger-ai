@@ -1,22 +1,21 @@
-
 # Name of the Project on Auger Cloud
 project: model-for-iris
 # Data source - local file or remote url
-source: 'iris.csv'
+source: files/iris.csv
 # DataSet on Auger Cloud
-dataset: ''
+dataset: iris.csv
 # Model type: classification|regression|timeseries
 model_type: classification
 # Target column name
-target: 'class'
+target: class
 # List of columns to be excluded from the training data
 exclude:
 # Experiment
 experiment:
   # Experiment name (if not specified, will be set on the first run)
-  name: ''
+  name: iris.csv-3-experiment
   # Latest experiment run id
-  experiment_session_id:
+  experiment_session_id: bc323e3011ec538b
   # Time series feature. If Data Source contains more then one DATETIME feature
   # you will have to explicitly specify feature to use as time series
   time_series:

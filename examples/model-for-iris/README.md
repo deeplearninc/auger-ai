@@ -14,6 +14,10 @@ or (optionally) pypi:
 pip install auger.ai
 ```
 We strongly encourage using virtualenv.
+Download your credentials file from Auger.AI cloud or sign in using augerai CLI:
+```
+augerai auth login
+```
 
 Run the app:
 ```
