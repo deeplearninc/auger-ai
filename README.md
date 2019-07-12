@@ -258,7 +258,7 @@ Experiment searches for the best Model(s) for a given DataSet.
   ctx = Context()
   project = Project(ctx, project_name)
   dataset = DataSet(ctx, project, dataset_name)
-  eperiment_name, session_id = Experiment(ctx, dataset).start()
+  experiment_name, session_id = Experiment(ctx, dataset).start()
   ```
 
   Example of the Experiment settings in auget.yaml:
