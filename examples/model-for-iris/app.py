@@ -1,7 +1,8 @@
-import subprocess
 import logging
-import time
+import os
+import subprocess
 import sys
+import time
 
 
 PREDICTION_SOURCE = 'files/iris_data_test.csv'
@@ -36,11 +37,14 @@ def dataset():
 
 
 def experiment():
-    def do_wait(prompt):
-        print(prompt)
-        result = subprocess.run(
-            'augerai experiment leaderboard', shell=True, stdout=subprocess.PIPE, check=False).stdout.decode(sys.stdout.encoding)
-        if result.endswith('Search is completed.'):
+    def do_wait(prompt=None):
+        if prompt:
+            print(prompt)
+        result = (subprocess.run(
+            'augerai experiment leaderboard',
+            shell=True, stdout=subprocess.PIPE, check=False)
+            .stdout.decode(sys.stdout.encoding))
+        if 'Search is completed.' in result:
             return result.splitlines()[-3].split('|')[0].strip()
         else:
             time.sleep(5)
@@ -49,9 +53,12 @@ def experiment():
     leaderboard = subprocess.run(
         ['augerai', 'experiment', 'leaderboard'],
         stdout=subprocess.PIPE, check=False).stdout.decode(sys.stdout.encoding)
-    if not leaderboard.endswith('is  progress...'):
+    if not 'is completed.' in leaderboard:
+        print("Waiting for model to train...")
         subprocess.check_output('augerai experiment start', shell=True)
-    return do_wait("Waiting for model to train...")
+    else:
+        print("Model is ready")
+    return do_wait()
 
 
 def deploy():
@@ -70,11 +77,13 @@ def predict():
             " If you want to re-run predict, just delete prediction file: " %
             PREDICTION_TARGET)
     else:
-        subprocess.check_output(
+        result = (subprocess.run(
             'augerai model predict -m %s --locally %s' % (
                 deployed_model_id, PREDICTION_SOURCE
             ),
-            shell=True)
+            shell=True, stdout=subprocess.PIPE, check=False)
+            .stdout.decode(sys.stdout.encoding))
+        print(result)
 
 
 def main():
