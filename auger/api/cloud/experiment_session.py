@@ -55,4 +55,4 @@ class AugerExperimentSessionApi(AugerBaseApi):
                     get('algorithm_name').split('.')[-1]})
         # if score_name:
         #     leaderboard.sort(key=lambda t: t[score_name], reverse=False)
-        return leaderboard[::-1]
+        return leaderboard
