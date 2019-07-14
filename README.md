@@ -418,7 +418,7 @@ leaderboards.
   ctx = Context()
   project = Project(ctx, project_name)
   # predict on the locally deployed model
-  Model(ctx, project).predict('../irises.csv', model_id, True)
+  Model(ctx, project).predict('../irises.csv', model_id, None, True)
   # result will be stored in ../irises_predicted.csv
   ```
 
