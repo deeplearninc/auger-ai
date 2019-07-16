@@ -32,6 +32,7 @@ install_requires = [
     'ruamel.yaml',
     'pandas==0.23.4',
     'sklearn-pandas==1.7.0',
+    'setuptools>=40.1.0',
 ]
 
 extras = {
