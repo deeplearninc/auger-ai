@@ -1,97 +1,125 @@
 import logging
 import os
-import subprocess
 import sys
 import time
+
+from auger.api.dataset import DataSet
+from auger.api.model import Model
+from auger.api.project import Project
+from auger.api.experiment import Experiment, AugerExperimentSessionApi
+from auger.api.utils.context import Context
+from auger.cli.utils.config import AugerConfig
 
 
 PREDICTION_SOURCE = 'files/iris_data_test.csv'
 PREDICTION_TARGET = 'files/irist_data_set_predict.csv'
+DATASET_NAME = 'iris.csv'
 
 log = logging.getLogger('auger.ai')
 
 
-def dataset():
-    print("Checking dataset...")
-    dataset_list = (subprocess.check_output(
-        'augerai dataset list', shell=True)
-        .decode(sys.stdout.encoding)
-        .splitlines())
-    if len(dataset_list) == 1:
-        print("No dataset found, creating the first...")
-        subprocess.check_call('augerai dataset create', shell=True)
-    else:
-        checked = [x for x in dataset_list if x.startswith('[x]')]
-        if len(checked):
-            print("Found uploaded and selected dataset: %s" % checked[0])
+class ExampleApp():
+    def __init__(self, ctx):
+        self.ctx = ctx
+        def print_(*args, **kwargs):
+            print(*args, **kwargs)
+        self.ctx.log = print_
+        self.dataset = None
+        self.model_id = None
+        self.project = Project(
+            self.ctx, self.ctx.get_config('auger').get('project', None))
+
+    def _get_datasets(self):
+        """return list of existing datasets in the Aguer Cloud"""
+        dataset_list = []
+        for dataset in iter(DataSet(self.ctx, self.project).list()):
+            dataset_list.append(dataset['name'])
+        return dataset_list
+
+    def _start_experiment(self, experiment_name):
+        eperiment_name, session_id = \
+            Experiment(self.ctx, self.dataset, experiment_name).start()
+        AugerConfig(self.ctx).set_experiment(eperiment_name, session_id)
+        return session_id
+
+    def _wait_for_experiment(self, session_id):
+        AugerExperimentSessionApi(self.ctx, None, None, session_id).wait_for_status([
+            'preprocess', 'started'])
+
+    def prepare_dataset(self):
+        """check whether dataset selected, if not, select or create one"""
+        self.ctx.log("Checking dataset...")
+        selected = self.ctx.get_config('config').get('dataset', None)
+        if selected is None:
+            if DATASET_NAME in self._get_datasets():
+                # try to select existing
+                AugerConfig(self.ctx).set_data_set(
+                    DATASET_NAME, '').set_experiment(None)
+                self.dataset = DataSet(self.ctx, self.project, DATASET_NAME)
+            else:
+                # or create new
+                self.ctx.log("No dataset found, creating the first one...")
+                source = self.ctx.get_config('config').get('source', None)
+                dataset = DataSet(self.ctx, self.project).create(source)
+                AugerConfig(self.ctx).set_data_set(
+                    dataset.name, source).set_experiment(None)
+                self.dataset = DataSet(self.ctx, self.project, dataset.name)
         else:
-            # no iris selected
-            if filter(lambda x: x.endswith(' iris.csv'), dataset_list):
-                print(
-                    "Datasets found:"
-                    "\n%s\n"
-                    "selecting iris.csv." %
-                    '\n'.join(dataset_list))
-                subprocess.check_call(
-                    'augerai dataset select iris.csv', shell=True)
+            self.dataset = DataSet(self.ctx, self.project, selected)
+            self.ctx.log("Currently selected: %s" % selected)
 
+    def run_experiment(self):
+        experiment_name = self.ctx.get_config('auger').get(
+            'experiment/name', None)
+        # run_id = self.ctx.get_config('auger').get(
+        #     'experiment/experiment_session_id', None)
 
-def experiment():
-    def do_wait(prompt=None):
-        if prompt:
-            print(prompt)
-        result = (subprocess.run(
-            'augerai experiment leaderboard',
-            shell=True, stdout=subprocess.PIPE, check=False)
-            .stdout.decode(sys.stdout.encoding))
-        if 'Search is completed.' in result:
-            return result.splitlines()[-3].split('|')[0].strip()
+        # if run_id is None or experiment_name is None:
+            # if no experiment ran:
+            # run_id = self._start_experiment(experiment_name)
+        run_id = self._start_experiment(experiment_name)
+        # else:
+        #     # if experiment exists, (start if needed) and wait for it
+        #     session_api = AugerExperimentSessionApi(
+        #         self.ctx, None, None, run_id)
+        #     status = session_api.properties().get('status')
+        #     self.ctx.log('Experiment status is %s' % status)
+        #     # available choices are: 
+        #     # [preprocess, started, completed, interrupted]
+        #     if status not in ('preprocess', 'started'):
+        #         run_id = self._start_experiment(experiment_name)
+        # wait for experiment to stop
+        self.ctx.log("waiting for experiment %s to finish" % experiment_name)
+        self._wait_for_experiment(run_id)
+        leaderboard, status = Experiment(
+            self.ctx, self.dataset, experiment_name).leaderboard(run_id)
+        self.model_id = leaderboard[0]['model id']
+
+    def deploy(self):
+        Model(self.ctx, self.project).deploy(self.model_id, locally=True)
+
+    def predict(self):
+        if os.path.exists(PREDICTION_TARGET):
+            self.ctx.log(
+                "Prediction already exists."
+                " If you want to re-run predict, just delete prediction file: " %
+                PREDICTION_TARGET)
         else:
-            time.sleep(5)
-            return do_wait('.')
-    dataset()
-    leaderboard = subprocess.run(
-        ['augerai', 'experiment', 'leaderboard'],
-        stdout=subprocess.PIPE, check=False).stdout.decode(sys.stdout.encoding)
-    if not 'is completed.' in leaderboard:
-        print("Waiting for model to train...")
-        subprocess.check_output('augerai experiment start', shell=True)
-    else:
-        print("Model is ready")
-    return do_wait()
-
-
-def deploy():
-    model_id = experiment()
-    print("Deploying model with id", model_id)
-    subprocess.check_output(
-        'augerai model deploy --locally %s' % model_id, shell=True)
-    return model_id
-
-
-def predict():
-    deployed_model_id = deploy()
-    if os.path.exists(PREDICTION_TARGET):
-        print(
-            "Prediction already exists."
-            " If you want to re-run predict, just delete prediction file: " %
-            PREDICTION_TARGET)
-    else:
-        result = (subprocess.run(
-            'augerai model predict -m %s --locally %s' % (
-                deployed_model_id, PREDICTION_SOURCE
-            ),
-            shell=True, stdout=subprocess.PIPE, check=False)
-            .stdout.decode(sys.stdout.encoding))
-        print(result)
+            Model(self.ctx, self.project).predict(
+                PREDICTION_SOURCE, self.model_id, locally=True)
 
 
 def main():
+    context = Context()
     try:
-        predict()
-    except subprocess.CalledProcessError as e:
+        app = ExampleApp(context)
+        app.prepare_dataset()
+        app.run_experiment()
+        app.deploy()
+        app.predict()
+    except Exception as e:
         import traceback; traceback.print_exc();
-        print(
+        context.log(
             "Example application execution has failed with error: '%s'" %
             str(e))
 
