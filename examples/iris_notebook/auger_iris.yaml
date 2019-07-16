@@ -1,5 +1,5 @@
 # Name of the Project on Auger Cloud
-project: iris_project
+project: iris-project
 # Data source - local file or remote url
 source: iris.csv
 # DataSet on Auger Cloud
