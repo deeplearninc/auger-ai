@@ -145,6 +145,7 @@ class AugerDataSetApi(AugerProjectFileApi):
                 'Error while uploading file to Auger Cloud...')
 
         url = res['url']
+        file_path = res['fields']['key']
         with open(file_to_upload, 'rb') as f:
             files = {'file': (file_path, f)}
             res = requests.post(url, data=res['fields'], files=files)
