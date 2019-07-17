@@ -24,8 +24,8 @@ class TestDataSetCLI():
         interceptor(PAYLOAD, monkeypatch)
         result = runner.invoke(cli, ['dataset', 'list'])
         assert result.exit_code == 0
-        assert log.messages[0] == 'test_dataset1'
-        assert log.messages[1] == 'test_dataset2'
+        assert log.messages[0].endswith('test_dataset1')
+        assert log.messages[1].endswith('test_dataset2')
         assert log.messages[2] == '2 DataSet(s) listed'
 
     def test_create(self, runner, log, project, authenticated, monkeypatch):
