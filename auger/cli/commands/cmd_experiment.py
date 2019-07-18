@@ -58,7 +58,7 @@ class ExperimentCmd(object):
             self.ctx, dataset, name).leaderboard(run_id)
         if leaderboard is None:
             raise AugerException('No leaderboard was found...')
-        print_table(self.ctx.log, leaderboard)
+        print_table(self.ctx.log, leaderboard[::-1])
         messages = {
             'preprocess': 'Search is preprocessing data for traing...',
             'started': 'Search is in progress...',
