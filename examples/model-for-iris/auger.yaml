@@ -3,7 +3,7 @@ project: model-for-iris
 # Data source - local file or remote url
 source: files/iris.csv
 # DataSet on Auger Cloud
-dataset: iris.csv
+dataset:
 # Model type: classification|regression|timeseries
 model_type: classification
 # Target column name
@@ -13,9 +13,9 @@ exclude:
 # Experiment
 experiment:
   # Experiment name (if not specified, will be set on the first run)
-  name: iris.csv-3-experiment
+  name:
   # Latest experiment run id
-  experiment_session_id: 27df2cc68f8449cd
+  experiment_session_id: 
   # Time series feature. If Data Source contains more then one DATETIME feature
   # you will have to explicitly specify feature to use as time series
   time_series:
