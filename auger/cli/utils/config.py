@@ -19,7 +19,7 @@ class AugerConfig(object):
 
     @_with_config_yaml
     def config(self, auger_yaml, config_yaml, *args, **kwargs):
-        auger_yaml['project'] = kwargs.get('project_name', '')
+        config_yaml['name'] = kwargs.get('project_name', '')
 
         config_yaml['source'] = kwargs.get('source', '')
         auger_yaml['dataset'] = kwargs.get('data_set_name', '')
@@ -34,7 +34,7 @@ class AugerConfig(object):
 
     @_with_config_yaml
     def set_project(self, auger_yaml, config_yaml, project_name):
-        auger_yaml['project'] = project_name
+        config_yaml['name'] = project_name
 
     @_with_config_yaml
     def set_data_set(

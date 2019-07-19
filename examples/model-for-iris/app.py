@@ -27,7 +27,7 @@ class ExampleApp():
         self.dataset = None
         self.model_id = None
         self.project = Project(
-            self.ctx, self.ctx.get_config('auger').get('project', None))
+            self.ctx, self.ctx.get_config('config').get('name', None))
 
     def _get_datasets(self):
         """return list of existing datasets in the Aguer Cloud"""
@@ -84,7 +84,7 @@ class ExampleApp():
         #         self.ctx, None, None, run_id)
         #     status = session_api.properties().get('status')
         #     self.ctx.log('Experiment status is %s' % status)
-        #     # available choices are: 
+        #     # available choices are:
         #     # [preprocess, started, completed, interrupted]
         #     if status not in ('preprocess', 'started'):
         #         run_id = self._start_experiment(experiment_name)

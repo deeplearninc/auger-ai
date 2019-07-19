@@ -1,7 +1,7 @@
 ---
 
 # Name of the Project on Auger Cloud
-project:
+name:
 # Data source - local file or remote url
 source:
 # DataSet on Auger Cloud
