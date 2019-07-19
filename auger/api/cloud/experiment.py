@@ -64,7 +64,7 @@ class AugerExperimentApi(AugerBaseApi):
             'max_total_time_mins':
                 auger_config.get('experiment/max_total_time', 60),
             'max_eval_time_mins':
-                auger_config.get('experiment/max_eval_time', 1),
+                auger_config.get('experiment/max_eval_time', 5),
             'max_n_trials':
                 auger_config.get('experiment/max_n_trials', 1000),
             'use_ensemble':
