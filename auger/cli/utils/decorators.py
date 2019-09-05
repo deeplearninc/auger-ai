@@ -26,16 +26,16 @@ def authenticated(decorated):
         try:
             self.ctx.credentials.verify()
         except NotAuthenticatedException as e:
-            self.ctx.log(str(e))    
+            self.ctx.log(str(e))
             sys.exit(1)
         return decorated(self, *args, **kwargs)
     return wrapper
 
 def _get_project(self, autocreate):
-    project_name = self.ctx.get_config('auger').get('project', None)
+    project_name = self.ctx.get_config('config').get('name', None)
     if project_name is None:
         raise AugerException(
-            'Please specify project name in auger.yaml/project...')
+            'Please specify project name in auger.yaml/name...')
     project = Project(self.ctx, project_name)
     project_properties = project.properties()
     if project_properties is None:

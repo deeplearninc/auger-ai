@@ -22,7 +22,7 @@ class TestNewCommand():
         # config contains proper data
         config = ConfigYaml()
         config.load_from_file(config_file)
-        assert config.project == 'test_project'
+        assert config.name == 'test_project'
 
     def test_project_with_given_name_already_exists(
             self, runner, log, project):

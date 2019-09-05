@@ -76,7 +76,7 @@ class ProjectCmd(object):
             set_experiment(None)
 
     def _setup_op(self, name, verify_project=True):
-        old_name = self.ctx.get_config('auger').get('project', None)
+        old_name = self.ctx.get_config('config').get('name', None)
         if name is None:
             name = old_name
         if name is None:
@@ -121,7 +121,7 @@ def delete(ctx, name):
 @pass_context
 def start(ctx, name):
     """Start Project.
-       If name is not specified will start Project set in auger.yaml/project
+       If name is not specified will start Project set in auger.yaml/name
     """
     ProjectCmd(ctx).start(name)
 
@@ -131,7 +131,7 @@ def start(ctx, name):
 @pass_context
 def stop(ctx, name):
     """Stop Project.
-       If name is not specified will stop Project set in auger.yaml/project
+       If name is not specified will stop Project set in auger.yaml/name
     """
     ProjectCmd(ctx).stop(name)
 
@@ -141,7 +141,7 @@ def stop(ctx, name):
 @pass_context
 def select(ctx, name):
     """Select Project.
-       Name will be set in auger.yaml/project
+       Name will be set in auger.yaml/name
     """
     ProjectCmd(ctx).select(name)
 

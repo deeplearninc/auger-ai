@@ -1,7 +1,7 @@
 ---
 debug: true
 # Name of the Project on Auger Cloud
-project: test_project
+name: test_project
 # Data source - local file or remote url
 source: iris.csv
 # DataSet on Auger Cloud

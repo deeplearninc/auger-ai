@@ -57,11 +57,11 @@ class TestProjectCLI():
         config_file = 'auger.yaml'
         config = ConfigYaml()
         config.load_from_file(config_file)
-        assert config.project == 'test_project'
+        assert config.name == 'test_project'
         result = runner.invoke(cli, ['project', 'select', 'another_project'])
         assert result.exit_code == 0
         config.load_from_file(config_file)
-        assert config.project == 'another_project'
+        assert config.name == 'another_project'
         assert log.messages[-1] == 'Selected Project another_project'
 
     def test_start(self, log, runner, project, authenticated, monkeypatch):
