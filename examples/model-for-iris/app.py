@@ -37,14 +37,11 @@ class ExampleApp():
         return dataset_list
 
     def _start_experiment(self, experiment_name):
-        eperiment_name, session_id = \
-            Experiment(self.ctx, self.dataset, experiment_name).start()
-        AugerConfig(self.ctx).set_experiment(eperiment_name, session_id)
-        return session_id
-
-    def _wait_for_experiment(self, session_id):
-        AugerExperimentSessionApi(self.ctx, None, None, session_id).wait_for_status([
-            'preprocess', 'started'])
+        experiment = Experiment(self.ctx, self.dataset, experiment_name)
+        experiment_name, session_id = \
+            experiment.start()
+        AugerConfig(self.ctx).set_experiment(experiment_name, session_id)
+        return experiment, session_id
 
     def prepare_dataset(self):
         """check whether dataset selected, if not, select or create one"""
@@ -77,7 +74,7 @@ class ExampleApp():
         # if run_id is None or experiment_name is None:
             # if no experiment ran:
             # run_id = self._start_experiment(experiment_name)
-        run_id = self._start_experiment(experiment_name)
+        self.experiment, run_id = self._start_experiment(experiment_name)
         # else:
         #     # if experiment exists, (start if needed) and wait for it
         #     session_api = AugerExperimentSessionApi(
@@ -90,9 +87,9 @@ class ExampleApp():
         #         run_id = self._start_experiment(experiment_name)
         # wait for experiment to stop
         self.ctx.log("waiting for experiment %s to finish" % experiment_name)
-        self._wait_for_experiment(run_id)
-        leaderboard, status = Experiment(
-            self.ctx, self.dataset, experiment_name).leaderboard(run_id)
+
+        self.experiment.wait(run_id)
+        leaderboard, status = self.experiment.leaderboard(run_id)
         self.model_id = leaderboard[0]['model id']
 
     def deploy(self):
@@ -108,15 +105,19 @@ class ExampleApp():
             Model(self.ctx, self.project).predict(
                 PREDICTION_SOURCE, self.model_id, locally=True)
 
+    def cleanup(self):
+        self.project.delete()
 
 def main():
     context = Context()
     try:
         app = ExampleApp(context)
         app.prepare_dataset()
+        time.sleep(15)  # wait for redis is ready
         app.run_experiment()
         app.deploy()
         app.predict()
+        app.cleanup()
     except Exception as e:
         import traceback; traceback.print_exc();
         context.log(

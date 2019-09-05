@@ -79,3 +79,14 @@ class Experiment(AugerExperimentApi):
                 if (latest[0] is None) or (latest[1] < start_time):
                     latest = [run.get('id'), start_time]
         return latest[0]
+
+    def wait(self, run_id=None):
+        if run_id is None:
+            run_id = self._get_latest_run()
+
+        if run_id is None:
+            return None, None
+        else:
+            AugerExperimentSessionApi(
+                self.ctx, self, None, run_id).wait_for_status([
+                    'waiting', 'preprocess', 'started'])
