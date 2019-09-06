@@ -48,7 +48,8 @@ class AugerProjectApi(AugerBaseApi):
                 'workers_count' : cluster_settings.get('workers_count'),
                 'kubernetes_stack': cluster_settings.get('kubernetes_stack')})
 
-        return self.wait_for_status(['undeployed', 'deployed', 'deploying'])
+        return self.wait_for_status(
+            ['undeployed', 'deployed', 'scaling', 'deploying'])
 
     def stop(self):
         if self.status() != 'undeployed':
