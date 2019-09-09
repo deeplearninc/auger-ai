@@ -5,6 +5,7 @@ import requests
 import shortuuid
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ElementTree
 
 from .cluster import AugerClusterApi
 from .utils.exception import AugerException
@@ -154,9 +155,14 @@ class AugerDataSetApi(AugerProjectFileApi):
             bucket = urllib.parse.urlparse(url).netloc.split('.')[0]
             return 's3://%s/%s' % (bucket, file_path)
         else:
-            raise AugerException(
-                'HTTP error [%s] while uploading file'
-                    ' to Auger Cloud...' % res.status_code)
+            if res.status_code == 400 and b'EntityTooLarge' in res.content:
+                max_size = ElementTree.fromstring(res.content).find('MaxSizeAllowed').text
+                max_size_mb = int(max_size) / 1024 / 1024
+                raise AugerException('Data set size is limited to %.1f MB' % max_size_mb)
+            else:
+                raise AugerException(
+                    'HTTP error [%s] "%s" while uploading file'
+                        ' to Auger Cloud...' % (res.status_code, res.content))
 
     def _get_data_set_name(self, file_name):
         fname, fext = os.path.splitext(file_name)
