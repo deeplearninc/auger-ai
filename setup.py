@@ -4,7 +4,7 @@ import codecs
 from setuptools import setup, find_namespace_packages
 from setuptools.command.install import install
 
-VERSION = '0.1.16'
+VERSION = '0.1.17'
 
 # Get the long description from the README file
 here = os.path.abspath(os.path.dirname(__file__))
