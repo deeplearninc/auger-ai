@@ -21,6 +21,16 @@ class DataFrame(object):
         return df
 
     @staticmethod
+    def load_records(filename, target, features=None, nrows=None):
+        df = DataFrame.load(filename, target, features, nrows)
+
+        features = df.columns.get_values().tolist()
+        df.replace({pandas.np.nan: None}, inplace=True)
+        records = df.values.tolist()
+
+        return records, features
+
+    @staticmethod
     def save(filename, data):
         df = pandas.DataFrame.from_records(data['data'], columns=data['columns'])
         df.to_csv(filename, index=False, encoding='utf-8')
