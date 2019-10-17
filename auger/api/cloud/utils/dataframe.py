@@ -22,7 +22,7 @@ class DataFrame(object):
 
     @staticmethod
     def save(filename, data):
-        df = pandas.DataFrame.from_dict(data)
+        df = pandas.DataFrame.from_records(data['data'], columns=data['columns'])
         df.to_csv(filename, index=False, encoding='utf-8')
 
     @staticmethod
