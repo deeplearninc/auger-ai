@@ -31,7 +31,6 @@ install_requires = [
     'auger-hub-api-client>=0.6.1',
     'ruamel.yaml',
     'pandas==0.23.4',
-    'sklearn-pandas==1.7.0',
     'setuptools>=40.1.0',
 ]
 
