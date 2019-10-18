@@ -21,7 +21,7 @@ class Context(object):
         self.debug = self.get_config('auger').get('debug', False)
         self.credentials = Credentials(self).load()
         self.rest_api = RestApi(
-            self.credentials.api_url, self.credentials.token)
+            self.credentials.api_url, self.credentials.token, debug=self.debug)
 
     def get_config(self, name):
         if isinstance(self.config, ConfigYaml):
