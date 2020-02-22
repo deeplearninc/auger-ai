@@ -1,3 +1,6 @@
+import time
+
+
 from .base import AugerBaseApi
 from .trial import AugerTrialApi
 
@@ -16,9 +19,20 @@ class AugerExperimentSessionApi(AugerBaseApi):
         return super().list(params)
 
     def run(self):
-        return self.rest_api.call(
-            'update_experiment_session',
-            {'id': self.object_id, 'status': 'preprocess'})
+        try:
+            return self.rest_api.call(
+                'update_experiment_session',
+                {'id': self.object_id, 'status': 'preprocess'})
+        except Exception as e:
+            self.ctx.log(
+                'Start experiment session failed. Try one more time ...: %s' % (e))
+
+            #Try one more time
+            time.sleep(60)
+            return self.rest_api.call(
+                'update_experiment_session',
+                {'id': self.object_id, 'status': 'preprocess'})
+
         # self.wait_for_status(['waiting', 'preprocess', 'started'])
 
     def interrupt(self):
