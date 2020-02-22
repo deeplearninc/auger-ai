@@ -4,7 +4,7 @@ import codecs
 from setuptools import setup, find_namespace_packages
 from setuptools.command.install import install
 
-VERSION = '0.1.19'
+VERSION = '0.1.20'
 
 # Get the long description from the README file
 here = os.path.abspath(os.path.dirname(__file__))
@@ -30,7 +30,7 @@ install_requires = [
     'shortuuid',
     'auger-hub-api-client>=0.6.6',
     'ruamel.yaml',
-    'pandas>=0.25.3',
+    'pandas==0.23.4', #for a2ml
     'setuptools>=40.1.0',
 ]
 
