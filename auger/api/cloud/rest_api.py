@@ -16,6 +16,7 @@ class RestApi(object):
         super(RestApi, self).__init__()
         self.hub_client = HubApiClient(hub_app_url=url, token=token, debug=debug)
         self.api_url = url
+        self.debug = debug
 
     def get_status(self, obj, obj_id):
         return self.hub_client.get_status(object=obj, id=obj_id)
@@ -59,7 +60,9 @@ class RestApi(object):
                 if offset >= response['meta']['pagination']['total']:
                     break
             except Exception as e:
-                import traceback; traceback.print_exc();
+                if self.debug:
+                    import traceback
+                    traceback.print_exc()
 
     def wait_for_object_status(self,
         get_status, progress, object_readable_name,
