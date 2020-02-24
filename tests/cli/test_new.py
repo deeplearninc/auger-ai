@@ -1,7 +1,7 @@
 import os
 
 from auger.cli.cli import cli
-from auger.api.utils.config_yaml import ConfigYaml
+from auger.api.utils.config import Config
 
 
 class TestNewCommand():
@@ -20,9 +20,8 @@ class TestNewCommand():
         assert os.path.exists(config_file)
 
         # config contains proper data
-        config = ConfigYaml()
-        config.load_from_file(config_file)
-        assert config.name == 'test_project'
+        config = Config().load('test_project')
+        assert config.get('name', '') == 'test_project'
 
     def test_project_with_given_name_already_exists(
             self, runner, log, project):
@@ -50,13 +49,10 @@ class TestNewCommand():
                 '--source', 'test_project/iris.csv'])
 
         assert result.exit_code == 0
-        config_path = os.path.join(
-            os.getcwd(), 'new_project', 'auger.yaml')
-        config = ConfigYaml()
-        config.load_from_file(config_path)
-        assert config.model_type == 'regression'
-        assert config.target == 'target_column'
-        assert config.source == os.path.join(
+        config = Config().load('new_project')
+        assert config.get('model_type', '') == 'regression'
+        assert config.get('target', '') == 'target_column'
+        assert config.get('source', '') == os.path.join(
             os.getcwd(), 'test_project', 'iris.csv')
 
     def test_bad_source(self, log, runner, isolated):

@@ -1,5 +1,5 @@
 from auger.cli.cli import cli
-from auger.api.utils.config_yaml import ConfigYaml
+from auger.api.utils.config import Config
 from auger.api.cloud.project import AugerProjectApi
 from .utils import interceptor, ORGANIZATIONS, PROJECTS, object_status_chain
 
@@ -77,10 +77,9 @@ class TestDataSetCLI():
         assert 'Deleted dataset test_dataset1.csv'
 
     def test_select(self, runner, log, isolated, project, authenticated):
-        config = ConfigYaml()
-        config.load_from_file('auger.yaml')
-        assert config.dataset == 'iris-1.csv'
+        config = Config()
+        assert config.get('dataset', '') == 'iris-1.csv'
         result = runner.invoke(cli, ['dataset', 'select', 'iris'])
-        config.load_from_file('auger.yaml')
-        assert config.dataset == 'iris'
+        config.load()
+        assert config.get('dataset', '') == 'iris'
         assert result.exit_code == 0

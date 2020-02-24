@@ -3,7 +3,6 @@ import os
 import pytest
 
 from auger.cli.cli import cli
-from auger.api.utils.config_yaml import ConfigYaml
 from .utils import interceptor, ORGANIZATIONS, PROJECTS
 
 
@@ -12,7 +11,7 @@ PROJECT_FILE = {
         'name': 'iris-1.csv',
         'id': 1256,
         'statistics': {
-            'columns_count': 5, 'count': 150, 
+            'columns_count': 5, 'count': 150,
             'stat_data': [{
                 'datatype': 'categorical',
                 'column_name': 'class',

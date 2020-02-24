@@ -1,50 +1,49 @@
 class AugerConfig(object):
-    """Modify configuration options in auger.yaml."""
+    """Modify configuration options in auger and config yaml."""
 
     def __init__(self, ctx):
         super().__init__()
         self.ctx = ctx
 
-    def _with_config_yaml(decorated):
-        def wrapper(self, *args, **kwargs) :
-            auger_config = self.ctx.get_config('auger')
-            general_config = self.ctx.get_config('config')
-            decorated(
-                self, auger_config.yaml, general_config.yaml, *args, **kwargs)
-            auger_config.write()
-            if auger_config != general_config:
-                general_config.write()
-            return self
-        return wrapper
+    def config(self, *args, **kwargs):
+        self.ctx.config.set('config', 'name', kwargs.get('project_name', ''))
 
-    @_with_config_yaml
-    def config(self, auger_yaml, config_yaml, *args, **kwargs):
-        config_yaml['name'] = kwargs.get('project_name', '')
+        self.ctx.config.set('config', 'source', kwargs.get('source', ''))
+        self.ctx.config.set('auger', 'dataset', kwargs.get('data_set_name', ''))
+        self.ctx.config.set('config', 'target', kwargs.get('target', ''))
 
-        config_yaml['source'] = kwargs.get('source', '')
-        auger_yaml['dataset'] = kwargs.get('data_set_name', '')
-        config_yaml['target'] = kwargs.get('target', '')
-
-        auger_yaml['experiment']['name'] = kwargs.get('experiment_name', '')
+        self.ctx.config.set('auger', 'experiment/name',
+            kwargs.get('experiment_name', ''))
         model_type = kwargs.get('model_type', None)
         if model_type:
-            auger_yaml['experiment']['metric'] = \
-                'f1_macro' if model_type == 'classification' else 'r2'
-        config_yaml['model_type'] = model_type or ''
+            self.ctx.config.set('auger', 'experiment/metric',
+                'f1_macro' if model_type == 'classification' else 'r2')
+        self.ctx.config.set('config', 'model_type', model_type or '')
+        if (self.ctx.config.ismultipart()):
+            self.ctx.config.write('config')
+        self.ctx.config.write('auger')
+        return self
 
-    @_with_config_yaml
-    def set_project(self, auger_yaml, config_yaml, project_name):
-        config_yaml['name'] = project_name
+    def set_project(self, project_name):
+        self.ctx.config.set('config', 'name', project_name)
+        if (self.ctx.config.ismultipart()):
+            self.ctx.config.write('config')
+        self.ctx.config.write('auger')
+        return self
 
-    @_with_config_yaml
-    def set_data_set(
-        self, auger_yaml, config_yaml, data_set_name, data_set_source=None):
-        auger_yaml['dataset'] = data_set_name
+    def set_data_set(self, data_set_name, data_set_source=None):
+        self.ctx.config.set('auger', 'dataset', data_set_name)
         if data_set_source:
-            config_yaml['source'] = data_set_source
+            self.ctx.config.set('config', 'source', data_set_source)
+        if (self.ctx.config.ismultipart()):
+            self.ctx.config.write('config')
+        self.ctx.config.write('auger')
+        return self
 
-    @_with_config_yaml
-    def set_experiment(
-        self, auger_yaml, config_yaml, experiment_name, session_id=None):
-        auger_yaml['experiment']['name'] = experiment_name
-        auger_yaml['experiment']['experiment_session_id'] = session_id
+    def set_experiment(self, experiment_name, session_id=None):
+        self.ctx.config.set(
+            'auger', 'experiment/name', experiment_name)
+        self.ctx.config.set(
+            'auger', 'experiment/experiment_session_id', session_id)
+        self.ctx.config.write('auger')
+        return self
