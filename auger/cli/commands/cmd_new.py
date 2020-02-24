@@ -42,7 +42,7 @@ class NewCmd(object):
             sys.exit(1)
         Template.copy_config_files(project_path)
 
-        self.ctx.load_config(project_path)
+        self.ctx.config.load(project_path)
         if self.source:
             try:
                 self.source = DataSet.verify(self.source)[0]

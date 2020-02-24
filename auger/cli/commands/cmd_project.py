@@ -76,7 +76,7 @@ class ProjectCmd(object):
             set_experiment(None)
 
     def _setup_op(self, name, verify_project=True):
-        old_name = self.ctx.get_config('config').get('name', None)
+        old_name = self.ctx.config.get('name', None)
         if name is None:
             name = old_name
         if name is None:

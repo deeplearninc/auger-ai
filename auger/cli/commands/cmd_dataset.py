@@ -16,7 +16,7 @@ class DataSetCmd(object):
     @with_project(autocreate=False)
     def list(self, project):
         count = 0
-        selected = self.ctx.get_config('auger').get('dataset', None)
+        selected = self.ctx.config.get('dataset', None)
         for dataset in iter(DataSet(self.ctx, project).list()):
             self.ctx.log(
                 ('[%s] ' % ('x' if selected == dataset.get('name') else ' ')) +
@@ -30,7 +30,7 @@ class DataSetCmd(object):
     @with_project(autocreate=True)
     def create(self, project, source):
         if source is None:
-            source = self.ctx.get_config('config').get('source', None)
+            source = self.ctx.config.get('source', None)
         dataset = DataSet(self.ctx, project).create(source)
         AugerConfig(self.ctx).set_data_set(dataset.name, source)
         self.ctx.log('Created DataSet %s' % dataset.name)
@@ -40,15 +40,15 @@ class DataSetCmd(object):
     @with_project(autocreate=False)
     def delete(self, project, name):
         if name is None:
-            name = self.ctx.get_config('auger').get('dataset', None)
+            name = self.ctx.config.get('dataset', None)
         DataSet(self.ctx, project, name).delete()
-        if name == self.ctx.get_config('auger').get('dataset', None):
+        if name == self.ctx.config.get('dataset', None):
             AugerConfig(self.ctx).set_data_set(None).set_experiment(None)
         self.ctx.log('Deleted dataset %s' % name)
 
     @error_handler
     def select(self, name):
-        old_name = self.ctx.get_config('auger').get('dataset', None)
+        old_name = self.ctx.config.get('dataset', None)
         if name != old_name:
             AugerConfig(self.ctx).set_data_set(name, '').set_experiment(None)
         self.ctx.log('Selected DataSet %s' % name)
@@ -58,7 +58,7 @@ class DataSetCmd(object):
     @with_project(autocreate=False)
     def download(self, project, name, path_to_download):
         if name is None:
-            name = self.ctx.get_config('auger').get('dataset', None)
+            name = self.ctx.config.get('dataset', None)
         file_name = DataSet(self.ctx, project, name).download(path_to_download)
         self.ctx.log('Downloaded dataset %s to %s' % (name, file_name))
 

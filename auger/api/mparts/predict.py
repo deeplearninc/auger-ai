@@ -29,7 +29,7 @@ class ModelPredict():
         self.ctx.log('Predictions stored in %s' % predicted)
 
     def _predict_on_cloud(self, filename, model_id, threshold=None):
-        target = self.ctx.get_config('config').get('target', None)
+        target = self.ctx.config.get('target', None)
         df = DataFrame.load(filename, target)
 
         pipeline_api = AugerPipelineApi(self.ctx, None, model_id)
@@ -94,7 +94,7 @@ class ModelPredict():
                 'Running model in deeplearninc/'
                 'auger-ml-worker:%s' % docker_tag)
             getattr(subprocess,
-                'check_call' if self.ctx.debug else 'check_output')(       
+                'check_call' if self.ctx.debug else 'check_output')(
                 command, stderr=subprocess.STDOUT, shell=True)
         except subprocess.CalledProcessError as e:
             raise AugerException('Error running Docker container...')

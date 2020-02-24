@@ -1,6 +1,6 @@
 from auger.cli.cli import cli
 from auger.api.cloud.rest_api import RestApi
-from auger.api.utils.config_yaml import ConfigYaml
+from auger.api.utils.config import Config
 from auger.api.credentials import Credentials
 
 from .utils import interceptor, object_status_chain, ORGANIZATIONS, PROJECTS
@@ -54,14 +54,12 @@ class TestProjectCLI():
         assert log.messages[-1] == 'Deleted Project test_project'
 
     def test_select(self, log, runner, project, authenticated):
-        config_file = 'auger.yaml'
-        config = ConfigYaml()
-        config.load_from_file(config_file)
-        assert config.name == 'test_project'
+        config = Config()
+        assert config.get('name', '') == 'test_project'
         result = runner.invoke(cli, ['project', 'select', 'another_project'])
         assert result.exit_code == 0
-        config.load_from_file(config_file)
-        assert config.name == 'another_project'
+        config.load()
+        assert config.get('name', '') == 'another_project'
         assert log.messages[-1] == 'Selected Project another_project'
 
     def test_start(self, log, runner, project, authenticated, monkeypatch):

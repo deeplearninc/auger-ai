@@ -41,8 +41,7 @@ class AugerExperimentApi(AugerBaseApi):
             'data_path': data_set_properties.get('url')})
 
     def get_experiment_settings(self):
-        config = self.ctx.get_config('config')
-        auger_config = self.ctx.get_config('auger')
+        config = self.ctx.config
 
         model_type = config.get('model_type', '')
         if not model_type in MODEL_TYPES:
@@ -58,21 +57,21 @@ class AugerExperimentApi(AugerBaseApi):
             'timeSeriesFeatures': [],
             'binaryClassification': False,
             'labelEncodingFeatures':
-                auger_config.get('experiment/label_encoded', []),
+                config.get('experiment/label_encoded', []),
             'crossValidationFolds':
-                auger_config.get('experiment/cross_validation_folds', 5),
+                config.get('experiment/cross_validation_folds', 5),
             'max_total_time_mins':
-                auger_config.get('experiment/max_total_time', 60),
+                config.get('experiment/max_total_time', 60),
             'max_eval_time_mins':
-                auger_config.get('experiment/max_eval_time', 6),
+                config.get('experiment/max_eval_time', 6),
             'max_n_trials':
-                auger_config.get('experiment/max_n_trials', 1000),
+                config.get('experiment/max_n_trials', 1000),
             'use_ensemble':
-                auger_config.get('experiment/use_ensemble', True),
+                config.get('experiment/use_ensemble', True),
             'classification':
                 True if model_type == 'classification' else False,
             'scoring':
-                auger_config.get('experiment/metric',
+                config.get('experiment/metric',
                     'f1_macro' if model_type == 'classification' else 'r2')
         }
 
@@ -90,7 +89,7 @@ class AugerExperimentApi(AugerBaseApi):
         if model_type is not 'timeseries':
             options['timeSeriesFeatures'] = []
         else:
-            time_series = auger_config.get('experiment/time_series', None)
+            time_series = config.get('experiment/time_series', None)
             if time_series:
                 options['timeSeriesFeatures'] = [time_series]
             if len(options['timeSeriesFeatures']) != 1:

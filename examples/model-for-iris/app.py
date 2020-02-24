@@ -27,7 +27,7 @@ class ExampleApp():
         self.dataset = None
         self.model_id = None
         self.project = Project(
-            self.ctx, self.ctx.get_config('config').get('name', None))
+            self.ctx, self.ctx.config.get('name', None))
 
     def _get_datasets(self):
         """return list of existing datasets in the Aguer Cloud"""
@@ -46,7 +46,7 @@ class ExampleApp():
     def prepare_dataset(self):
         """check whether dataset selected, if not, select or create one"""
         self.ctx.log("Checking dataset...")
-        selected = self.ctx.get_config('config').get('dataset', None)
+        selected = self.ctx.config.get('dataset', None)
         if selected is None:
             if DATASET_NAME in self._get_datasets():
                 # try to select existing
@@ -56,7 +56,7 @@ class ExampleApp():
             else:
                 # or create new
                 self.ctx.log("No dataset found, creating the first one...")
-                source = self.ctx.get_config('config').get('source', None)
+                source = self.ctx.config.get('source', None)
                 dataset = DataSet(self.ctx, self.project).create(source)
                 AugerConfig(self.ctx).set_data_set(
                     dataset.name, source).set_experiment(None)
@@ -66,9 +66,8 @@ class ExampleApp():
             self.ctx.log("Currently selected: %s" % selected)
 
     def run_experiment(self):
-        experiment_name = self.ctx.get_config('auger').get(
-            'experiment/name', None)
-        # run_id = self.ctx.get_config('auger').get(
+        experiment_name = self.ctx.config.get('experiment/name', None)
+        # run_id = self.ctx.config.get(
         #     'experiment/experiment_session_id', None)
 
         # if run_id is None or experiment_name is None:
