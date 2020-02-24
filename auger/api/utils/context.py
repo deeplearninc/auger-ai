@@ -21,7 +21,7 @@ class Context(object):
         self.debug = self.config.get('debug', False)
         self.credentials = Credentials(self).load()
         self.rest_api = RestApi(
-            self.credentials.api_url, self.credentials.token)
+            self.credentials.api_url, self.credentials.token, debug=self.debug)
 
     def copy(self, name):
         new = Context(name)

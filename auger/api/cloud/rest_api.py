@@ -12,9 +12,9 @@ STATE_POLL_INTERVAL = 10
 class RestApi(object):
     """Warapper around Auger Cloud Rest Api."""
 
-    def __init__(self, url, token):
+    def __init__(self, url, token, debug=False):
         super(RestApi, self).__init__()
-        self.hub_client = HubApiClient(hub_app_url=url, token=token)
+        self.hub_client = HubApiClient(hub_app_url=url, token=token, debug=debug)
         self.api_url = url
 
     def get_status(self, obj, obj_id):
