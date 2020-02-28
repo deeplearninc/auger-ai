@@ -25,7 +25,7 @@ class AugerClusterApi(AugerBaseApi):
 
     @staticmethod
     def get_cluster_settings(ctx):
-        config = ctx.config
+        config = ctx.config['auger']
 
         default_stack = "stable"
         if 'staging' in ctx.rest_api.api_url:
