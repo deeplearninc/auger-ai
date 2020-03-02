@@ -33,10 +33,12 @@ class LocalFSClient:
         return os.path.exists(path)
 
     def create_folder(self, path):
-        try:
+        if not self.is_folder_exists(path):
             os.makedirs(path)
-        except OSError:
-            pass
+
+        # try:
+        # except OSError:
+        #     pass
             #logging.exception("createFolder failed")
         self.list_folder(self.get_parent_folder(path))
 
@@ -61,10 +63,10 @@ class LocalFSClient:
             with self.open_atomic(path, "w") as file:
                 file.write(data)
         else:
-            from .FSClient import FSClient
+            from auger.api.utils import fsclient
             self.remove_file(path)
 
-            with FSClient().open_file(path, "w") as file:
+            with fsclient.open_file(path, "w") as file:
                 try:
                     file.write(data)
                 finally:
@@ -158,7 +160,7 @@ class LocalFSClient:
         if self.is_file_exists(path_dst):
             self.remove_file(path_dst)
 
-        shutil.copy(path_src, path_dst)
+        shutil.copy2(path_src, path_dst)
 
     def copy_files(self, path_src, path_dst):
         if self.is_file_exists(path_dst):

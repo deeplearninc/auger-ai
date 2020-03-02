@@ -1,6 +1,8 @@
 import re
 import ruamel.yaml
 
+from auger.api.utils import fsclient
+
 
 class ConfigYaml(object):
     def __init__(self):
@@ -12,7 +14,7 @@ class ConfigYaml(object):
         if not isinstance(filename, str) or len(filename) == 0:
             raise ValueError("please provide yaml file name")
         self.filename = filename
-        with open(filename, 'r') as f:
+        with fsclient.open_file(filename, 'r') as f:
             self.yaml = ruamel.yaml.load(f,
                 Loader=ruamel.yaml.RoundTripLoader)
         return self
@@ -42,6 +44,9 @@ class ConfigYaml(object):
 
     def write(self, filename=None):
         filename = filename if filename else self.filename
-        with open(self.filename, 'w') as out:
-            out.write(ruamel.yaml.dump(self.yaml,
+        fsclient.write_text_file(filename, ruamel.yaml.dump(self.yaml,
                 Dumper=ruamel.yaml.RoundTripDumper))
+        
+        # with open(self.filename, 'w') as out:
+        #     out.write(ruamel.yaml.dump(self.yaml,
+        #         Dumper=ruamel.yaml.RoundTripDumper))
