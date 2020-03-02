@@ -52,3 +52,8 @@ class TestModelCLI():
     def test_predict_remoteley(self, log, runner, project, authenticated, monkeypatch):
         result = runner.invoke(cli, ['model', 'predict', 'iris.csv'])
         pass
+
+    @pytest.mark.skip(reason="not implemented on server-side currently")
+    def test_actual_remoteley(self, log, runner, project, authenticated, monkeypatch):
+        result = runner.invoke(cli, ['model', 'actual', 'iris.csv'])
+        pass

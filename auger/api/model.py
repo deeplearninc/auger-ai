@@ -1,5 +1,6 @@
 from auger.api.mparts.deploy import ModelDeploy
 from auger.api.mparts.predict import ModelPredict
+from auger.api.mparts.actual import ModelActual
 
 
 class Model(object):
@@ -15,3 +16,6 @@ class Model(object):
 
     def predict(self, filename, model_id, threshold=None, locally=False):
         ModelPredict(self.ctx).execute(filename, model_id, threshold, locally)
+
+    def actual(self, filename, model_id):
+        ModelActual(self.ctx).execute(filename, model_id)
