@@ -23,6 +23,13 @@ class ModelCmd(object):
     def predict(self, project, filename, model_id, threshold, locally):
         Model(self.ctx, project).predict(filename, model_id, threshold, locally)
 
+    @error_handler
+    @authenticated
+    @with_project(autocreate=False)
+    def actual(self, project, filename, model_id):
+        Model(self.ctx, project).actual(
+            filename, model_id)
+
 
 @click.group('model', short_help='Auger model management')
 @pass_context
@@ -54,10 +61,20 @@ def predict(ctx, filename, model_id, threshold, locally):
     ModelCmd(ctx).predict(filename, model_id, threshold, locally)
 
 
+@click.command('actual', short_help='Send actuals to deployed model.')
+@click.argument('filename', required=True, type=click.STRING)
+@click.option('--model-id', '-m', type=click.STRING, required=True,
+              help='Deployed model id.')
+@pass_context
+def actual(ctx, filename, model_id):
+    """Actual with deployed model."""
+    ModelCmd(ctx).actual(filename, model_id)
+
 @pass_context
 def add_commands(ctx):
     command.add_command(deploy)
     command.add_command(predict)
+    command.add_command(actual)
 
 
 add_commands()
