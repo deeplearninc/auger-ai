@@ -14,10 +14,11 @@ class Experiment(AugerExperimentApi):
         self.dataset = dataset
 
     def list(self):
-        data_set_id = self.dataset.oid
-        filter_by_dataset = \
-            lambda exp: exp.get('project_file_id') == data_set_id
-        return (e for e in super().list() if filter_by_dataset(e))
+        # data_set_id = self.dataset.oid
+        # filter_by_dataset = \
+        #     lambda exp: exp.get('project_file_id') == data_set_id
+        # return (e for e in super().list() if filter_by_dataset(e))
+        return super().list()
 
     def start(self):
         if self.dataset is None:
@@ -56,9 +57,7 @@ class Experiment(AugerExperimentApi):
 
     def leaderboard(self, run_id=None):
         if run_id is None:
-            print('========== here', run_id)
             run_id = self._get_latest_run()
-            print('========== here1', run_id)
 
         if run_id is None:
             return None, None
@@ -69,10 +68,7 @@ class Experiment(AugerExperimentApi):
             return session_api.get_leaderboard(), status
 
     def history(self):
-        print('========== history')
-        l = AugerExperimentSessionApi(self.ctx, self).list()
-        print('========== history 1')    
-        return l
+        return AugerExperimentSessionApi(self.ctx, self).list()
 
     def _get_latest_run(self):
         latest = [None, None]

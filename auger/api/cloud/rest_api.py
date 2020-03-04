@@ -51,9 +51,7 @@ class RestApi(object):
                 if not 'data' in response or not 'meta' in response:
                     raise AugerException("Read list of %s failed." % record_type)
 
-                print('response data: ', response['data'])
                 for item in response['data']:
-                    print('item: ', item)
                     yield item
 
                 received = len(response['data'])

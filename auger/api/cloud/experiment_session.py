@@ -15,9 +15,7 @@ class AugerExperimentSessionApi(AugerBaseApi):
 
     def list(self, params=None):
         params = {} if params is None else params
-        print('AugerExperimentSessionApi list')
         params['project_id'] = self.parent_api.parent_api.oid
-        print('AugerExperimentSessionApi list 1')
         return super().list(params)
 
     def run(self):
