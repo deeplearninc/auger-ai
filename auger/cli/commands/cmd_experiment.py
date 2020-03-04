@@ -24,6 +24,7 @@ class ExperimentCmd(object):
             self.ctx.log(exp.get('name'))
             count += 1
         self.ctx.log('%s Experiment(s) listed' % str(count))
+        return {'experiments': Experiment(self.ctx, dataset).list()}
 
     @error_handler
     @authenticated
@@ -34,6 +35,7 @@ class ExperimentCmd(object):
         eperiment_name, session_id = \
             Experiment(self.ctx, dataset, experiment_name).start()
         AugerConfig(self.ctx).set_experiment(eperiment_name, session_id)
+        return {'eperiment_name': eperiment_name, 'session_id': session_id}
 
     @error_handler
     @authenticated
@@ -46,6 +48,7 @@ class ExperimentCmd(object):
             self.ctx.log('Search is stopped...')
         else:
             self.ctx.log('Search is not running. Stop is ignored.')
+        return {'stopped': name}
 
     @error_handler
     @authenticated
@@ -70,6 +73,7 @@ class ExperimentCmd(object):
             self.ctx.log(message)
         else:
             self.ctx.log('Search status is %s' % status)
+        return {'leaderboard': leaderboard, 'status': status}
 
     @error_handler
     @authenticated
@@ -83,7 +87,7 @@ class ExperimentCmd(object):
                 exp_run.get('id'),
                 exp_run.get('model_settings').get('start_time'),
                 exp_run.get('status')))
-
+        return {'history': Experiment(self.ctx, dataset, name).history()}
 
 @click.group('experiment', short_help='Auger experiment management')
 @pass_context

@@ -1,5 +1,6 @@
 import re
 from .utils.exception import AugerException
+import traceback
 
 
 class AugerBaseApi(object):
@@ -17,12 +18,14 @@ class AugerBaseApi(object):
         self.ctx = ctx
 
     def list(self, params=None):
+        print('list 0: ', self.object_name)
         params = {} if params is None else params
         if self.parent_api:
             api_request_path = self.parent_api.api_request_path
             params['%s_id' % api_request_path] = self.parent_api.oid
         if self.object_name:
             params['name'] = self.object_name
+        print('list: ', self.object_name, params)
         return self.rest_api.request_list(
             '%ss' % self.api_request_path, params)
 
@@ -37,11 +40,15 @@ class AugerBaseApi(object):
                 self._get_readable_name())
 
         alt_name = self.object_name.replace('_', '-')
+        print('searching for %s:' % self.object_name)
         for item in iter(self.list()):
+            print('item name: ', item['name'])
             if item['name'] in [self.object_name, alt_name]:
                 self.object_id = item.get('id')
+                print('found id for %s:' % self.object_name)
                 return item
 
+        print('not found id for %s:' % self.object_name)
         return None
 
     def status(self):
@@ -111,7 +118,11 @@ class AugerBaseApi(object):
 
     def _ensure_object_id(self):
         if self.object_id is None:
+            # print("getting properties for %s: %s ==================" % \
+            #     (self._get_readable_name(), self.object_name))
+            # traceback.print_stack()
             properties = self.properties()
+            # print('properties for %s:' % self.object_name, properties)
             if properties is not None:
                 self.object_id = properties.get('id')
             else:

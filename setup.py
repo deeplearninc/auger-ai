@@ -28,7 +28,7 @@ install_requires = [
     'click',
     'requests',
     'shortuuid',
-    'auger-hub-api-client>=0.6.6',
+    'auger-hub-api-client==0.6.8',
     'ruamel.yaml',
     'pandas==0.23.4', #for a2ml
     'setuptools>=40.1.0',
