@@ -53,7 +53,7 @@ class ExperimentCmd(object):
     @error_handler
     @authenticated
     @with_dataset
-    def leaderboard(self, dataset, run_id):
+    def leaderboard(self, dataset, run_id = None):
         name = self.ctx.config.get('experiment/name', None)
         if name is None:
             raise AugerException('Please specify Experiment name...')
