@@ -57,10 +57,14 @@ class ExperimentCmd(object):
         name = self.ctx.config.get('experiment/name', None)
         if name is None:
             raise AugerException('Please specify Experiment name...')
-        leaderboard, status = Experiment(
+        if run_id is None:
+            run_id = self.ctx.config.get(
+                'experiment/experiment_session_id', None)
+        leaderboard, status, run_id = Experiment(
             self.ctx, dataset, name).leaderboard(run_id)
         if leaderboard is None:
             raise AugerException('No leaderboard was found...')
+        self.ctx.log('Leaderboard for Run %s' % run_id)
         print_table(self.ctx.log, leaderboard[::-1])
         messages = {
             'preprocess': 'Search is preprocessing data for traing...',
@@ -73,7 +77,7 @@ class ExperimentCmd(object):
             self.ctx.log(message)
         else:
             self.ctx.log('Search status is %s' % status)
-        return {'leaderboard': leaderboard, 'status': status}
+        return {'run_id': run_id, 'leaderboard': leaderboard, 'status': status}
 
     @error_handler
     @authenticated
