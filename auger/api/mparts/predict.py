@@ -28,6 +28,8 @@ class ModelPredict():
 
         self.ctx.log('Predictions stored in %s' % predicted)
 
+        return predicted
+
     def _predict_on_cloud(self, filename, model_id, threshold=None):
         target = self.ctx.config.get('target', None)
         records, features = DataFrame.load_records(filename, target)

@@ -20,6 +20,7 @@ class ProjectCmd(object):
             self.ctx.log(project.get('name'))
             count += 1
         self.ctx.log('%s Project(s) listed' % str(count))
+        return {'projects': Project(self.ctx).list()}
 
     @error_handler
     @authenticated
@@ -29,6 +30,7 @@ class ProjectCmd(object):
         if name != old_name:
             self._set_project_config(name)
         self.ctx.log('Created Project %s' % name)
+        return {'project': name}
 
     @error_handler
     @authenticated
@@ -38,6 +40,7 @@ class ProjectCmd(object):
         if name == old_name:
             self._set_project_config(None)
         self.ctx.log('Deleted Project %s' % name)
+        return {'deleted': name}
 
     @error_handler
     @authenticated
@@ -49,6 +52,7 @@ class ProjectCmd(object):
             self.ctx.log('Started Project %s' % name)
         else:
             self.ctx.log('Project is already running...')
+        return {'running': name}
 
     @error_handler
     @authenticated
@@ -60,6 +64,7 @@ class ProjectCmd(object):
             self.ctx.log('Stopped Project %s' % name)
         else:
             self.ctx.log('Project is not running...')
+        return {'stopped': name}
 
     @error_handler
     @authenticated
@@ -68,6 +73,7 @@ class ProjectCmd(object):
         if name != old_name:
             self._set_project_config(name)
         self.ctx.log('Selected Project %s' % name)
+        return {'selected': name}
 
     def _set_project_config(self, name):
         AugerConfig(self.ctx).\

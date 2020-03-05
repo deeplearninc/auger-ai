@@ -16,7 +16,10 @@ def error_handler(decorated):
                 import traceback
                 traceback.print_exc()
             self.ctx.log(str(exc))
-            sys.exit(1)
+            if self.ctx.exit_on_exception:
+                sys.exit(1)
+            else:
+                raise exc
     return wrapper
 
 
@@ -27,7 +30,10 @@ def authenticated(decorated):
             self.ctx.credentials.verify()
         except NotAuthenticatedException as e:
             self.ctx.log(str(e))
-            sys.exit(1)
+            if self.ctx.exit_on_exception:
+                sys.exit(1)
+            else:
+                raise e
         return decorated(self, *args, **kwargs)
     return wrapper
 
