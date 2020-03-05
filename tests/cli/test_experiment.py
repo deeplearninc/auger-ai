@@ -159,7 +159,7 @@ class TestExperimentCLI():
         interceptor(PAYLOAD, monkeypatch)
         result = runner.invoke(cli, ['experiment', 'leaderboard'])
         assert result.exit_code == 0
-        assert len(log.messages) == 44
+        assert len(log.messages) == 45
         assert log.messages[-1] == 'Search is completed.'
 
     def test_history(self, runner, log, project, authenticated, monkeypatch):
