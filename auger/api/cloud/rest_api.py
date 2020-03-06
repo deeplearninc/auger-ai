@@ -60,9 +60,7 @@ class RestApi(object):
                 if offset >= response['meta']['pagination']['total']:
                     break
             except Exception as e:
-                if self.debug:
-                    import traceback
-                    traceback.print_exc()
+                    import traceback; traceback.print_exc()
 
     def wait_for_object_status(self,
         get_status, progress, object_readable_name,

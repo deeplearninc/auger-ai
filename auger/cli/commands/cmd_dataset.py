@@ -24,16 +24,18 @@ class DataSetCmd(object):
             )
             count += 1
         self.ctx.log('%s DataSet(s) listed' % str(count))
+        return {'datasets': DataSet(self.ctx, project).list()}
 
     @error_handler
     @authenticated
     @with_project(autocreate=True)
-    def create(self, project, source):
+    def create(self, project, source = None):
         if source is None:
             source = self.ctx.config.get('source', None)
         dataset = DataSet(self.ctx, project).create(source)
         AugerConfig(self.ctx).set_data_set(dataset.name, source)
         self.ctx.log('Created DataSet %s' % dataset.name)
+        return {'created': dataset.name}
 
     @error_handler
     @authenticated
@@ -45,6 +47,7 @@ class DataSetCmd(object):
         if name == self.ctx.config.get('dataset', None):
             AugerConfig(self.ctx).set_data_set(None).set_experiment(None)
         self.ctx.log('Deleted dataset %s' % name)
+        return {'deleted': name}
 
     @error_handler
     def select(self, name):
@@ -52,6 +55,7 @@ class DataSetCmd(object):
         if name != old_name:
             AugerConfig(self.ctx).set_data_set(name, '').set_experiment(None)
         self.ctx.log('Selected DataSet %s' % name)
+        return {'selected': name}
 
     @error_handler
     @authenticated
@@ -61,6 +65,7 @@ class DataSetCmd(object):
             name = self.ctx.config.get('dataset', None)
         file_name = DataSet(self.ctx, project, name).download(path_to_download)
         self.ctx.log('Downloaded dataset %s to %s' % (name, file_name))
+        return {'dowloaded': name, 'file': file_name}
 
 
 @click.group('dataset', short_help='Auger Cloud dataset(s) management')

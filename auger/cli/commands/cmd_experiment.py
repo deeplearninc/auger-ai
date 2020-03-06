@@ -24,6 +24,7 @@ class ExperimentCmd(object):
             self.ctx.log(exp.get('name'))
             count += 1
         self.ctx.log('%s Experiment(s) listed' % str(count))
+        return {'experiments': Experiment(self.ctx, dataset).list()}
 
     @error_handler
     @authenticated
@@ -34,6 +35,7 @@ class ExperimentCmd(object):
         eperiment_name, session_id = \
             Experiment(self.ctx, dataset, experiment_name).start()
         AugerConfig(self.ctx).set_experiment(eperiment_name, session_id)
+        return {'eperiment_name': eperiment_name, 'session_id': session_id}
 
     @error_handler
     @authenticated
@@ -46,18 +48,23 @@ class ExperimentCmd(object):
             self.ctx.log('Search is stopped...')
         else:
             self.ctx.log('Search is not running. Stop is ignored.')
+        return {'stopped': name}
 
     @error_handler
     @authenticated
     @with_dataset
-    def leaderboard(self, dataset, run_id):
+    def leaderboard(self, dataset, run_id = None):
         name = self.ctx.config.get('experiment/name', None)
         if name is None:
             raise AugerException('Please specify Experiment name...')
-        leaderboard, status = Experiment(
+        if run_id is None:
+            run_id = self.ctx.config.get(
+                'experiment/experiment_session_id', None)
+        leaderboard, status, run_id = Experiment(
             self.ctx, dataset, name).leaderboard(run_id)
         if leaderboard is None:
             raise AugerException('No leaderboard was found...')
+        self.ctx.log('Leaderboard for Run %s' % run_id)
         print_table(self.ctx.log, leaderboard[::-1])
         messages = {
             'preprocess': 'Search is preprocessing data for traing...',
@@ -70,6 +77,7 @@ class ExperimentCmd(object):
             self.ctx.log(message)
         else:
             self.ctx.log('Search status is %s' % status)
+        return {'run_id': run_id, 'leaderboard': leaderboard, 'status': status}
 
     @error_handler
     @authenticated
@@ -83,7 +91,7 @@ class ExperimentCmd(object):
                 exp_run.get('id'),
                 exp_run.get('model_settings').get('start_time'),
                 exp_run.get('status')))
-
+        return {'history': Experiment(self.ctx, dataset, name).history()}
 
 @click.group('experiment', short_help='Auger experiment management')
 @pass_context

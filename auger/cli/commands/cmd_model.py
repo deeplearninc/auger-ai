@@ -15,13 +15,16 @@ class ModelCmd(object):
     @authenticated
     @with_project(autocreate=False)
     def deploy(self, project, model_id, locally):
-        Model(self.ctx, project).deploy(model_id, locally)
+        model_id = Model(self.ctx, project).deploy(model_id, locally)
+        return {'model_id': model_id}
 
     @error_handler
     @authenticated
     @with_project(autocreate=False)
     def predict(self, project, filename, model_id, threshold, locally):
-        Model(self.ctx, project).predict(filename, model_id, threshold, locally)
+        predicted = Model(self.ctx, project).predict(
+            filename, model_id, threshold, locally)
+        return {'predicted': predicted}
 
     @error_handler
     @authenticated
@@ -29,7 +32,7 @@ class ModelCmd(object):
     def actual(self, project, filename, model_id):
         Model(self.ctx, project).actual(
             filename, model_id)
-
+        return ''
 
 @click.group('model', short_help='Auger model management')
 @pass_context

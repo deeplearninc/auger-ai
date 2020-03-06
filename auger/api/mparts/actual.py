@@ -14,10 +14,11 @@ class ModelActual():
         self.ctx.log('Sending actuals on data in %s' % filename)
         filename = os.path.abspath(filename)
         self._actual_to_cloud(filename, model_id)
+        return True
 
     def _actual_to_cloud(self, filename, model_id):
         with open(filename) as f:
-          a = [{k: v for k, v in row.items()} 
+          a = [{k: v for k, v in row.items()}
               for row in csv.DictReader(f, skipinitialspace=True)]
 
         pipeline_api = AugerPipelineApi(self.ctx, None, model_id)
