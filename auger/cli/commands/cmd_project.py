@@ -30,7 +30,7 @@ class ProjectCmd(object):
         if name != old_name:
             self._set_project_config(name)
         self.ctx.log('Created Project %s' % name)
-        return {'project': name}
+        return {'created': name}
 
     @error_handler
     @authenticated

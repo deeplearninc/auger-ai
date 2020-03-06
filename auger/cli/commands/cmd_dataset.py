@@ -35,7 +35,7 @@ class DataSetCmd(object):
         dataset = DataSet(self.ctx, project).create(source)
         AugerConfig(self.ctx).set_data_set(dataset.name, source)
         self.ctx.log('Created DataSet %s' % dataset.name)
-        return {'dataset': dataset.name}
+        return {'created': dataset.name}
 
     @error_handler
     @authenticated
