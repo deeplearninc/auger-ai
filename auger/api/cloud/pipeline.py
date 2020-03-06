@@ -43,23 +43,5 @@ class AugerPipelineApi(AugerBaseApi):
         if self.object_id is None:
             raise AugerException('Please provide Auger Pipeline id')
 
-        status = self.properties().get('status')
-        if status != 'ready':
-            if 'error' in status:
-                # there are following options currently:
-                # [created_files_with_error, packaged_with_error,
-                # deployed_with_error undeployed_with_error]
-                error_message = self.properties().get('error_message')
-                raise AugerException(
-                    """Pipeline %s deployment has failed with following """
-                    """error on Auger Cloud: `%s`""" % (
-                        self.object_id, error_message))
-            else:
-                raise AugerException(
-                    "Pipeline %s is not ready..." % self.object_id)
-
         actual_api = AugerActualApi(self.ctx, self)
-        actual_properties = \
-            actual_api.create(records)
-
-        return actual_properties.get('result')
+        actual_api.create(records)

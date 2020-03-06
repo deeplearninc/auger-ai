@@ -10,6 +10,6 @@ class AugerActualApi(AugerBaseApi):
         assert pipeline_api is not None, 'Pipeline must be set for Actuals'
 
     def create(self, records):
-        return self._call_create({
+        return self._call_create(params={
             'pipeline_id': self.parent_api.object_id,
-            'actuals': records })
+            'actuals': records}, has_return_object=False)
