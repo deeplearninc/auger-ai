@@ -12,10 +12,10 @@ class Model(object):
         self.ctx = ctx
 
     def deploy(self, model_id, locally=False):
-        ModelDeploy(self.ctx, self.project).execute(model_id, locally)
+        return ModelDeploy(self.ctx, self.project).execute(model_id, locally)
 
     def predict(self, filename, model_id, threshold=None, locally=False):
-        ModelPredict(self.ctx).execute(filename, model_id, threshold, locally)
+        return ModelPredict(self.ctx).execute(filename, model_id, threshold, locally)
 
     def actual(self, filename, model_id):
-        ModelActual(self.ctx).execute(filename, model_id)
+        return ModelActual(self.ctx).execute(filename, model_id)

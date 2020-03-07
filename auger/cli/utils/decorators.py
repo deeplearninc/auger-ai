@@ -16,7 +16,9 @@ def error_handler(decorated):
                 import traceback
                 traceback.print_exc()
             self.ctx.log(str(exc))
-            sys.exit(1)
+            if not hasattr(self.ctx, 'not_reraise_exceptions')\
+               or not self.ctx.not_reraise_exceptions:
+                raise exc
     return wrapper
 
 
@@ -26,8 +28,7 @@ def authenticated(decorated):
         try:
             self.ctx.credentials.verify()
         except NotAuthenticatedException as e:
-            self.ctx.log(str(e))
-            sys.exit(1)
+            raise e
         return decorated(self, *args, **kwargs)
     return wrapper
 

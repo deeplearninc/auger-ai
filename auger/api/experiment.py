@@ -14,10 +14,11 @@ class Experiment(AugerExperimentApi):
         self.dataset = dataset
 
     def list(self):
-        data_set_id = self.dataset.oid
-        filter_by_dataset = \
-            lambda exp: exp.get('project_file_id') == data_set_id
-        return (e for e in super().list() if filter_by_dataset(e))
+        # data_set_id = self.dataset.oid
+        # filter_by_dataset = \
+        #     lambda exp: exp.get('project_file_id') == data_set_id
+        # return (e for e in super().list() if filter_by_dataset(e))
+        return super().list()
 
     def start(self):
         if self.dataset is None:
@@ -31,9 +32,10 @@ class Experiment(AugerExperimentApi):
             data_set_id = self.dataset.oid
             experiment_data_set = self.properties().get('project_file_id')
             if data_set_id != experiment_data_set:
-                raise AugerException(
-                    'Can\'t start Experiment '
-                    'configured with different DataSet...')
+                self.object_id = None
+                self.object_name = None
+                self.ctx.log('Current experiment setup with different DataSet. '
+                    'Will create new Experimet...')
 
         if not self.dataset.project.is_running():
             self.ctx.log('Starting Project to process request...')
@@ -59,12 +61,12 @@ class Experiment(AugerExperimentApi):
             run_id = self._get_latest_run()
 
         if run_id is None:
-            return None, None
+            return None, None, None
         else:
             session_api = AugerExperimentSessionApi(
                 self.ctx, None, None, run_id)
             status = session_api.properties().get('status')
-            return session_api.get_leaderboard(), status
+            return session_api.get_leaderboard(), status, run_id
 
     def history(self):
         return AugerExperimentSessionApi(self.ctx, self).list()
