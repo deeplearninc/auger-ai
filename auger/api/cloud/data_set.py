@@ -23,9 +23,9 @@ class AugerDataSetApi(AugerProjectFileApi):
         super(AugerDataSetApi, self).__init__(
             ctx, project_api, data_set_name, data_set_id)
 
-    def create(self, data_source_file, data_set_name=None):
-        data_source_file, local_data_source = \
-            AugerDataSetApi.verify(data_source_file, self.ctx.config.path)
+    def create(self, data_source_file, data_set_name=None, local_data_source=True):
+        # data_source_file, local_data_source = \
+        #     AugerDataSetApi.verify(data_source_file, self.ctx.config.path)
 
         if local_data_source:
             file_url = self._upload_to_cloud(data_source_file)
