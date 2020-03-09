@@ -100,14 +100,15 @@ class AugerBaseApi(object):
     def _post_check_status(self, status):
         self._log_status(status)
 
-    def _call_create(self, params=None, progress=None):
+    def _call_create(self, params=None, progress=None,has_return_object=True):
         object_properties = self.rest_api.call(
             'create_%s' % self.api_request_path, params)
-        if object_properties:
-            self.object_id = object_properties.get('id')
-            if progress:
-                self.wait_for_status(progress)
-        return self.properties()
+        if has_return_object:
+            if object_properties:
+                self.object_id = object_properties.get('id')
+                if progress:
+                    self.wait_for_status(progress)
+            return self.properties()
 
     def _ensure_object_id(self):
         if self.object_id is None:
