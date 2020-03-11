@@ -19,7 +19,7 @@ class VerifyVersionCommand(install):
         tag = os.getenv('CIRCLE_TAG', '')
 
         if not tag.endswith(VERSION, 1):
-            info = "Git tag: {0} does not match the version of auger-cli: {1}".format(
+            info = "Git tag: {0} does not match the version of auger-ai: {1}".format(
                 tag, VERSION
             )
             sys.exit(info)
