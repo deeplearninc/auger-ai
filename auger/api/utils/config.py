@@ -11,6 +11,7 @@ class Config(object):
     def __init__(self):
         super(Config, self).__init__()
         self.parts = {}
+        self.path = None
         self.load()
 
     def get(self, path, default=None):

@@ -32,6 +32,9 @@ install_requires = [
     'ruamel.yaml',
     'pandas==0.23.4', #for a2ml
     'setuptools>=40.1.0',
+    's3fs',
+    'boto3',
+    'smart_open'
 ]
 
 extras = {

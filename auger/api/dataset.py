@@ -15,13 +15,14 @@ class DataSet(AugerDataSetApi):
         if data_source_file is None:
             raise AugerException('Please specify data source file...')
 
-        AugerDataSetApi.verify(data_source_file)
+        data_source_file, local_data_source = \
+            AugerDataSetApi.verify(data_source_file, self.ctx.config.path)
 
         if not self.project.is_running():
             self.ctx.log('Starting Project to process request...')
             self.project.start()
 
-        super().create(data_source_file, self.object_name)
+        super().create(data_source_file, self.object_name, local_data_source=local_data_source)
         return self
 
     def download(self, path_to_download):

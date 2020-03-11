@@ -39,10 +39,10 @@ class AugerProjectApi(AugerBaseApi):
                 cluster_api.create()
         else:
             cluster_settings = cluster_api.get_cluster_settings(self.ctx)
-            self.rest_api.call('update_project', {
-                'id': self.object_id,
-                'cluster_autoterminate_minutes':
-                    cluster_settings.get('autoterminate_minutes')})
+            # self.rest_api.call('update_project', {
+            #     'id': self.object_id,
+            #     'cluster_autoterminate_minutes':
+            #         cluster_settings.get('autoterminate_minutes')})
             self.rest_api.call('deploy_project', {
                 'id': self.object_id,
                 'worker_type_id': cluster_settings.get('worker_type_id'),

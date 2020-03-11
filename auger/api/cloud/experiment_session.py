@@ -67,6 +67,8 @@ class AugerExperimentSessionApi(AugerBaseApi):
                     '{0:.4f}'.format(item.get('score_value')),
                 'algorithm': item.get('hyperparameter').\
                     get('algorithm_name').split('.')[-1]})
-        # if score_name:
-        #     leaderboard.sort(key=lambda t: t[score_name], reverse=False)
+
+        if score_name:
+            leaderboard.sort(key=lambda t: t[score_name], reverse=False)
+            
         return leaderboard

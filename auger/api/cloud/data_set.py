@@ -10,8 +10,9 @@ import xml.etree.ElementTree as ElementTree
 from .cluster import AugerClusterApi
 from .utils.exception import AugerException
 from .project_file import AugerProjectFileApi
+from  auger.api.utils import fsclient
 
-SUPPORTED_FORMATS = ['.csv', '.arff']
+SUPPORTED_FORMATS = ['.csv', '.arff', '.gz', '.bz2', '.zip', '.xz', '.json', '.xls', '.xlsx', '.feather', '.h5', '.hdf5']
 
 
 class AugerDataSetApi(AugerProjectFileApi):
@@ -22,9 +23,9 @@ class AugerDataSetApi(AugerProjectFileApi):
         super(AugerDataSetApi, self).__init__(
             ctx, project_api, data_set_name, data_set_id)
 
-    def create(self, data_source_file, data_set_name=None):
-        data_source_file, local_data_source = \
-            AugerDataSetApi.verify(data_source_file)
+    def create(self, data_source_file, data_set_name=None, local_data_source=True):
+        # data_source_file, local_data_source = \
+        #     AugerDataSetApi.verify(data_source_file, self.ctx.config.path)
 
         if local_data_source:
             file_url = self._upload_to_cloud(data_source_file)
@@ -77,12 +78,17 @@ class AugerDataSetApi(AugerProjectFileApi):
         return 'DataSet'
 
     @staticmethod
-    def verify(data_source_file):
+    def verify(data_source_file, config_path=None):
         if urllib.parse.urlparse(data_source_file).scheme in ['http', 'https']:
             return data_source_file, False
 
-        data_source_file = os.path.abspath(
-            os.path.join(os.getcwd(), data_source_file))
+        if not fsclient.is_s3_path(data_source_file):
+            if config_path is None:
+                config_path = os.getcwd()
+
+            data_source_file = os.path.join(config_path, data_source_file)
+            if not fsclient.is_s3_path(data_source_file):
+                data_source_file = os.path.abspath(data_source_file)
 
         filename, file_extension = os.path.splitext(data_source_file)
         if not file_extension in SUPPORTED_FORMATS:
@@ -90,7 +96,7 @@ class AugerDataSetApi(AugerProjectFileApi):
                 'Source file has to be one of the supported fomats: %s' %
                 ', '.join(SUPPORTED_FORMATS))
 
-        if not os.path.isfile(data_source_file):
+        if not fsclient.is_file_exists(data_source_file):
             raise AugerException(
                 'Can\'t find file to import: %s' % data_source_file)
 
@@ -147,7 +153,7 @@ class AugerDataSetApi(AugerProjectFileApi):
 
         url = res['url']
         file_path = res['fields']['key']
-        with open(file_to_upload, 'rb') as f:
+        with fsclient.open_file(file_to_upload, 'rb') as f:
             files = {'file': (file_path, f)}
             res = requests.post(url, data=res['fields'], files=files)
 
