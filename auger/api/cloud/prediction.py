@@ -12,5 +12,8 @@ class AugerPredictionApi(AugerBaseApi):
 
     def create(self, records, features, threshold=None):
         return self._call_create({
-        'pipeline_id': self.parent_api.object_id,
-        'records': records, 'features': features}, ['requested', 'running'])
+            'pipeline_id': self.parent_api.object_id,
+            'records': records, 
+            'features': features,
+            'threshold': threshold
+            }, ['requested', 'running'])
