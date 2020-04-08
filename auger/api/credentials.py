@@ -17,7 +17,9 @@ class Credentials(object):
         self.token = None
 
     def load(self):
-        if 'AUGER_CREDENTIALS' in os.environ:
+        if hasattr(self.ctx, 'credentials'):
+            content = self.ctx.credentials
+        elif 'AUGER_CREDENTIALS' in os.environ:
             content = os.environ.get('AUGER_CREDENTIALS', None)
             content = json.loads(content) if content else {}
         else:
@@ -27,7 +29,7 @@ class Credentials(object):
 
         self.username = content.get('username')
         self.organization = content.get('organization')
-        self.api_url = content.get('url', 'https://app.auger.ai')
+        self.api_url = content.get('api_url', 'https://app.auger.ai')
         self.token = content.get('token')
 
         return self
@@ -37,7 +39,7 @@ class Credentials(object):
 
         content = {}
         content['username'] = self.username
-        content['url'] = self.api_url
+        content['api_url'] = self.api_url
         content['token'] = self.token
         content['organization'] = self.organization
 
@@ -51,7 +53,7 @@ class Credentials(object):
         return True
 
     def _path_to_credentials(self):
-        default_path = '%s/.augerai' % os.environ.get('HOME', os.getcwd())
+        default_path = '%s/.a2ml' % os.environ.get('HOME', os.getcwd())
         creds_path = os.path.abspath(self.ctx.config.get(
             'path_to_credentials', default_path))
         return os.environ.get('AUGER_CREDENTIALS_PATH', creds_path)

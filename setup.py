@@ -34,7 +34,7 @@ install_requires = [
     'setuptools>=40.1.0',
     's3fs',
     'boto3',
-    'smart_open'
+    'smart_open==1.9.0'
 ]
 
 extras = {

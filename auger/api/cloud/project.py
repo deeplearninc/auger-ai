@@ -53,7 +53,6 @@ class AugerProjectApi(AugerBaseApi):
                 project_properties = self.properties()
                 status = project_properties.get('status')
                 project_status = ['deployed', 'deploying', 'running']
-                print(status)
                 if not status in project_status:
                     raise                    
 
