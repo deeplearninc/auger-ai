@@ -7,5 +7,12 @@ class Project(AugerProjectApi):
     """Auger Cloud Projects(s) management"""
 
     def __init__(self, ctx, project_name=None):
-        org = AugerOrganizationApi(ctx, ctx.credentials.organization)
+        if isinstance(ctx.credentials.organization, int):
+            org_name = None
+            org_id = ctx.credentials.organization
+        else:
+            org_name = ctx.credentials.organization
+            org_id = None
+
+        org = AugerOrganizationApi(ctx, org_name, org_id)
         super(Project, self).__init__(ctx, org, project_name)
